@@ -304,7 +304,6 @@ namespace domain {
     InstabilityDeltas AgenticCell::calculateInstabilityDeltas() const {
         return delta_strategy_->calculateDeltas(*this, noise_.get());
     }
-    }
 
     std::unique_ptr<AgenticCell> AgenticCell::attemptDivision() {
         double rate = is_neoplastic_ && enable_big_bang_mode_ ? neoplastic_division_rate_ : division_rate_;
