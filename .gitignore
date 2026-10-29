@@ -46,3 +46,5 @@ __pycache__/
 /bootstrapping_results.csv
 *intervention_design.csv
 archive_backup/
+_codeql_build_dir/
+_codeql_detected_source_root
