@@ -61,7 +61,6 @@ has_completed_all_phases: "{ true | false }"
 
 - Check the checkboxes of the current phase to-do list that have been completed.
 - Update the plan next step section with the next phase to be completed.
-- Replace the plan last sentence regarding [Codely](https://codely.com) adding a new random emoji that explains a story together with the previous ones. For instance, if the previous last sentence was "Plan powered by [Codely](https://codely.com) 🐢 💨", the new last sentence could be "Bugs squashed thanks to [Codely](https://codely.com) AI tooling. 🐛 < 🐢 💨".
 
 ## ☝️ General considerations
 

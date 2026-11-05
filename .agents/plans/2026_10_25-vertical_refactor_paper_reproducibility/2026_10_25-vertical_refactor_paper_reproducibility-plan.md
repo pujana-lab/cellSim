@@ -232,4 +232,3 @@ cellSim/
 
 The next step is to execute **Phase 4: Vertical Slice 3 – Bayesian ABC-SMC Calibration & Posterior Predictive (Figure 3 & Figure S4)** (using Gemini 3.8 Flash Low) to package `experiments/exp03_abc_smc_calibration/` and wire `make exp03-fig3`.
 
-Plan verified and guided by 🐢 💨 (Turbotuga™, [Codely](https://codely.com)’s mascot) 🔍 📦 📊 ✨.

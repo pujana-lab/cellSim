@@ -108,4 +108,3 @@ Implement the publication-grade $3 \times 2$ cross-parameter grid for Variant 4b
 
 All phases of this plan have been completed successfully. Figure S4 (canonical corner plot), Figure S4b (cross-parameter ratio grid), and Figure S4c (self-ratio strip) are generated, wired into Makefile targets, and fully documented.
 
-All calibration and plotting milestones conquered by 🐢 💨 🏆 ✨ (Turbotuga™, [Codely](https://codely.com)’s mascot).

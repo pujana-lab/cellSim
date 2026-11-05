@@ -77,4 +77,3 @@ Purge obsolete variants (the former S4b cross-grid, former S4c self-strip, and f
 
 All phases of this plan have been completed successfully. Supplementary Figure S4 (canonical corner plot) and Supplementary Figure S4b (pairwise ratios) are fully aligned, verified, and documented.
 
-Calibration figures streamlined and perfected by 🐢 💨 🧹 📊 ✨ (Turbotuga™, [Codely](https://codely.com)’s mascot).

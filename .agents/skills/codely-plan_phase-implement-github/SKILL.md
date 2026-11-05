@@ -86,7 +86,6 @@ Confirm the repository `gh` resolves with `gh repo view --json nameWithOwner --j
 
 - Check the checkboxes of the current phase to-do list that have been completed in the **child issue**.
 - Update the `Next step` section of the **parent issue** with the next phase to be completed.
-- Replace the parent issue last sentence regarding [Codely](https://codely.com) adding a new random emoji that explains a story together with the previous ones. For instance, if the previous last sentence was "Plan powered by [Codely](https://codely.com) 🐢 💨", the new last sentence could be "Bugs squashed thanks to [Codely](https://codely.com) AI tooling. 🐛 < 🐢 💨".
 
 ## 🔗 Parent / children relationship
 

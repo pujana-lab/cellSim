@@ -173,4 +173,3 @@ Verify that newly calibrated ABC-SMC and bootstrapping results reproduce the ref
 
 The next step is to implement **Phase 4: Bootstrapping, Attenuation, and Cell Scaling Experiment Scripts (Pillars 2, 3, 4)** (`scripts/experiments/exp_02_bootstrapping_features.py`, `scripts/experiments/exp_03_attenuation_interception.py`, `scripts/experiments/exp_04_cell_scaling.py`) with `--dry-run` modes, output artifacts, and minimal figure generation.
 
-Contracts expanded and calibrated thanks to [Codely](https://codely.com) tooling 🐢 💨 🔍 📜 🔬 🚀 🧬 🧪.

@@ -104,4 +104,3 @@ Purge over 104 MB of obsolete legacy paper drafts, discarded hypotheses (such as
 All phases of the plan are complete!
 The `docs/` folder has been thoroughly cleaned of 104.9 MB of legacy residue and now solely contains clean, publication-ready documentation in English aligned with the published manuscript v4.
 
-Legacy clutter swept clean thanks to [Codely](https://codely.com) AI tooling. 🐢 💨 📦 🧹 📖 ✨ 🚀

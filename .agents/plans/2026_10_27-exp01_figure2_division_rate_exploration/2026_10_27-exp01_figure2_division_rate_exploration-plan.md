@@ -96,4 +96,3 @@ Execute the full Monte Carlo simulations with $d = 0.01$ ($N = 1000$ tissues per
 
 All phases of this plan have been completed successfully. The new figure with representative and 36 grid models under $d = 0.01$ is generated and documented.
 
-All simulation goals reached full speed across the finish line! 🏁 🐢 💨 🏆 (Turbotuga™, [Codely](https://codely.com)’s mascot).

@@ -154,4 +154,3 @@ Import, clean, and standardize Python scripts (`make_figures.py`, `make_sfig5.py
 
 The next step is to execute **Phase 1: Directory Setup, Asset Ingestion & Dedicated Build Harness** to create the `tissue_scale/` directory, copy the frozen datasets and configs, and wire the dedicated Makefile.
 
-Plan prepared with Codely discipline by 🐢 💨 🏆 ✨ (Turbotuga™, [Codely](https://codely.com)’s mascot).

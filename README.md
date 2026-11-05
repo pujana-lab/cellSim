@@ -136,6 +136,12 @@ make exp09-ts-simulate    # 24-point checkpoint relaxation grid (N=3,000 per cel
 
 ---
 
+## Computational Reproducibility & AI-Assisted Engineering
+
+The simulation suites and vertical experiment slices were engineered following Domain-Driven Design (DDD) principles and rigorous software engineering workflows. Architecture design, refactoring, and experiment verification were coordinated using agentic software engineering harness conventions (adapted from [Codely](https://github.com/codelytv)'s open agent-harness specifications) executed via AI coding agents (Antigravity CLI / Gemini models). All execution plans, validation checklists, and tracking artifacts are preserved for full procedural reproducibility in `.agents/plans/`.
+
+---
+
 ## Citation & Authorship
 
 Palomero, L. et al. (2026). *BRCA1-ONSET: A Multiscale Stochastic Framework for Tumor Evolution and Cancer Interception in BRCA1 Mutation Carriers*.
