@@ -76,11 +76,12 @@ def plot_figure_2(
     if show_grid and file_all_grid.exists():
         df_all = pd.read_csv(file_all_grid)
         first_grid = True
+        n_grid = len(df_all.groupby(["beta", "low_delta"]))
         grid_d = "0.01" if ("001" in data_suffix or "0.01" in data_suffix) else "0.001"
         for (b, dl), g in df_all.groupby(["beta", "low_delta"]):
             sub = g.sort_values("age")
             sub = sub[(sub["age"] >= 0) & (sub["age"] <= max_age)]
-            lbl = rf"Grid combinations ($N=36$, $d={grid_d}$)" if first_grid else None
+            lbl = rf"Grid combinations ($N={n_grid}$, $d={grid_d}$)" if first_grid else None
             ax1.plot(sub["age"], sub["penetrance"], color="#b0bec5", alpha=0.45, lw=0.85, zorder=2, label=lbl)
             first_grid = False
 
@@ -152,11 +153,12 @@ def plot_figure_2(
     # -------------------------------------------------------------
     if show_grid and file_all_grid.exists():
         df_all = pd.read_csv(file_all_grid)
+        n_grid = len(df_all.groupby(["beta", "low_delta"]))
         first_grid_b = True
         for (b, dl), g in df_all.groupby(["beta", "low_delta"]):
             sub = g.sort_values("age")
             sub = sub[(sub["age"] >= 0) & (sub["age"] <= max_age)]
-            lbl = r"Unaccelerated grid ($N=36$)" if first_grid_b else None
+            lbl = rf"Unaccelerated grid ($N={n_grid}$)" if first_grid_b else None
             ax2.plot(sub["age"], sub["penetrance"], color="#b0bec5", alpha=0.35, lw=0.8, zorder=2, label=lbl)
             first_grid_b = False
 

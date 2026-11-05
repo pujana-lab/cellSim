@@ -269,7 +269,7 @@ def main() -> int:
     parser.add_argument("--simulate", action="store_true", help="Run full 204,000 condition simulation")
     parser.add_argument("--workers", type=int, default=8, help="OMP worker threads (default: 8)")
     parser.add_argument("--binary", type=str, default="./build/run_paper_interventions")
-    parser.add_argument("--post-csv", type=str, default="experiments/exp04_emergent_features/data/Figure4a_parameters.csv")
+    parser.add_argument("--post-csv", type=str, default="experiments/exp04_cs_emergent_features/data/Figure4a_parameters.csv")
     parser.add_argument("--output-dir", type=str, default=str(Path(__file__).resolve().parent / "data"))
     args = parser.parse_args()
 

@@ -24,7 +24,7 @@ CI_UPPER = np.array([7.0, 30.0, 52.0, 65.0, 73.0, 80.0])
 SIGMA_WEIGHT = (CI_UPPER - CI_LOWER) / 3.92
 
 BETA_COARSE = [0.010, 0.020, 0.040, 0.060, 0.080, 0.100]
-DLOW_COARSE = [0.020, 0.040, 0.060, 0.080, 0.100, 0.150]
+DLOW_COARSE = [0.020, 0.040, 0.060, 0.080, 0.100, 0.150, 0.200]
 
 
 def evaluate_simulation(
@@ -120,7 +120,7 @@ def generate_figure2_trajectories(n_runs: int, output_dir: Path, division_rate: 
     print(f"🔬 Simulating authentic Figure 2 trajectories with N={n_runs} tissues per curve (d={division_rate}, max_t={max_t})...")
 
     # 1. Panel a: Pre-transformation parameter exploration (basal expansion, nu = d)
-    # Exact combinations from the 6x6 coarse grid (beta in [0.01, 0.10], dl in [0.02, 0.15])
+    # Combinations from the 6x7 coarse grid (beta in [0.01, 0.10], dl in [0.02, 0.20])
     # 1. Higher-beta (best overall in grid, reported SSE ~2078): beta=0.060, dl=0.150
     # 2. Lower-beta: beta=0.010, dl=0.150 (delayed onset, rises late to 78%)
     # 3. Higher-delta_low: beta=0.040, dl=0.200 (overshoots above clinical reference at late ages, ~80%)
@@ -243,9 +243,10 @@ def generate_figure2_trajectories(n_runs: int, output_dir: Path, division_rate: 
 
 
 def generate_all_grid_trajectories(n_runs: int, output_dir: Path, division_rate: float = 0.001, suffix: str = "", max_t: int = 100):
-    """Simulate annual cumulative penetrance curves for all 36 coarse grid combinations."""
+    """Simulate annual cumulative penetrance curves for all 42 coarse grid combinations."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    print(f"🔬 Simulating all 36 grid trajectories (N={n_runs} per setting, d={division_rate}, max_t={max_t})...")
+    n_models = len(BETA_COARSE) * len(DLOW_COARSE)
+    print(f"🔬 Simulating all {n_models} grid trajectories (N={n_runs} per setting, d={division_rate}, max_t={max_t})...")
 
     rows = []
     seed = 100000
@@ -281,13 +282,14 @@ def generate_all_grid_trajectories(n_runs: int, output_dir: Path, division_rate:
         out_grid_100 = output_dir / "figure2a_all_grid_100years.csv"
         df_grid.to_csv(out_grid_100, index=False)
         print(f"  ✓ Saved consolidated 100-year grid trajectories: {out_grid_100}")
-    print(f"✓ Saved all 36 grid trajectories ({len(df_grid)} rows): {out_grid}")
+    print(f"✓ Saved all {len(df_grid['beta'].unique()) * len(df_grid['low_delta'].unique())} grid trajectories ({len(df_grid)} rows): {out_grid}")
 
 
 def run_grid_sweep(n_runs: int, output_dir: Path):
     """Run full coarse grid sweep for no-expansion and accelerated expansion."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    print(f"🔬 Running coarse grid sweep (N={n_runs} runs per setting)...")
+    n_models = len(BETA_COARSE) * len(DLOW_COARSE)
+    print(f"🔬 Running coarse grid sweep (N={n_runs} runs per setting, {n_models} total models)...")
 
     # 1. No accelerated expansion (nu = d = 0.001)
     rows_noexp = []
@@ -326,8 +328,8 @@ def main():
     parser = argparse.ArgumentParser(description="Exploratory grid and trajectory runner for Figure 2")
     parser.add_argument("--smoke-test", action="store_true", help="Run fast verification")
     parser.add_argument("--generate-trajectories", action="store_true", help="Generate simulated trajectories for Figure 2")
-    parser.add_argument("--generate-grid-trajectories", action="store_true", help="Simulate all 36 grid curves for Figure 2a background")
-    parser.add_argument("--run-grid", action="store_true", help="Run full 6x6 coarse simulation grid summary")
+    parser.add_argument("--generate-grid-trajectories", action="store_true", help="Simulate all grid curves for Figure 2a background")
+    parser.add_argument("--run-grid", action="store_true", help="Run full coarse simulation grid summary")
     parser.add_argument("--division-rate", type=float, default=0.001, help="Normal cell division rate per tick / d (default: 0.001)")
     parser.add_argument("--max-t", type=int, default=100, help="Maximum years of follow-up (default: 100)")
     parser.add_argument("--file-suffix", type=str, default="", help="Suffix for output CSV files")
