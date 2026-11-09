@@ -114,6 +114,10 @@ All official figures are synchronized in [`results/paper_figures/`](results/pape
 | **Figure S6** | `exp08_ts_homogeneous_restraint` | `make exp08-ts-sfig6` | Homogeneous tissue-restraint fitting limitations & early vs late SSE trade-off |
 | **Figure S7** | `exp09_ts_checkpoint_relaxation` | `make exp09-ts-sfig7` | Checkpoint relaxation sensitivity heatmaps ($\gamma \times p_{\text{bypass}}$ grid) |
 
+### Supplementary Tables
+
+- **Supplementary Table S2** ([Markdown](docs/supplementary/Supplementary_Table_S2.md), [CSV S2a](docs/supplementary/Supplementary_Table_S2a_cell_scale.csv), [CSV S2b](docs/supplementary/Supplementary_Table_S2b_tissue_scale.csv)): Comprehensive parameter catalog, status classifications (`inferred`, `fixed structural assumption`, `exploratory/reference setting`, `derived`, `tissue-scale calibrated`), biological justifications, and sensitivity test references for both 500-cell and $10^7$-cell model tiers.
+
 ---
 
 ## Simulation Campaigns

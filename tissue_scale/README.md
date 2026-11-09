@@ -70,3 +70,5 @@ make -C tissue_scale
 | `theta_D2_mean` | $\bar{\theta}_{D2}$ | $31.79$ | Baseline tissue-restraint barrier threshold ($D_2$) |
 | `tau_expansion` | $\tau_T$ | $0.65$ yr | Effective post-transformation clonal doubling time |
 | `sigma_theta_d2` | $\sigma_{\theta_{D2}}$ | $0.38$ | Inter-individual log-normal standard deviation in $D_2$ restraint |
+
+For the complete multi-scale parameter definitions, literature bases, status categories, and sensitivity analyses across both modeling scales, see [Supplementary Table S2](../docs/supplementary/Supplementary_Table_S2.md).

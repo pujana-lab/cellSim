@@ -36,6 +36,12 @@ Every figure is provided in three standardized publication formats:
 
 ---
 
+## Supplementary Tables
+
+- **Supplementary Table S2** ([Markdown](../../docs/supplementary/Supplementary_Table_S2.md), [CSV S2a](../../docs/supplementary/Supplementary_Table_S2a_cell_scale.csv), [CSV S2b](../../docs/supplementary/Supplementary_Table_S2b_tissue_scale.csv)): Exhaustive catalog of model parameters across the 500-cell agent-based and $10^7$-cell population cohort models, including formal status classifications (`inferred`, `fixed structural assumption`, `exploratory/reference setting`, `derived`, `tissue-scale calibrated`), biological basis, and sensitivity test linkages.
+
+---
+
 ## Synchronization
 To re-export all figures from their underlying simulation experiment slices:
 ```bash

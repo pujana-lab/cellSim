@@ -17,8 +17,8 @@ implemented_by:
     version: "3.8"
     reasoning_effort: "low"
 
-last_implementation_at: "2026-11-09T08:53:00Z"
-has_completed_all_phases: "false"
+last_implementation_at: "2026-11-09T17:12:00Z"
+has_completed_all_phases: "true"
 ---
 
 # Plan: Age-Stratified BRCA1 Composition, Ordinal Lineage Trend Analysis, and Supplementary Table S2
@@ -143,8 +143,8 @@ Update `experiments/exp07_ts_multiobjective_cohort/plot_figure6.py` and `tissue_
 Compile the unified Supplementary Table S2 partitioned into Table S2a (Cell-scale 500-cell model) and Table S2b (Tissue-scale 10^7-cell model) with exact mathematical symbols, biological meanings, reference values, status classifications (`inferred`, `fixed structural assumption`, `exploratory/reference setting`, `derived`, `tissue-scale calibrated`), biological sources, and sensitivity test references.
 
 #### To-do actions list
-- [ ] Ensure `docs/supplementary/` directory exists (`mkdir -p docs/supplementary`).
-- [ ] Create `docs/supplementary/Supplementary_Table_S2.md` containing:
+- [x] Ensure `docs/supplementary/` directory exists (`mkdir -p docs/supplementary`).
+- [x] Create `docs/supplementary/Supplementary_Table_S2.md` containing:
   - Header and introductory methodology describing parameter status categories and scale differences.
   - Table S2a (Cell-Scale 500-Cell Agent-Based Model):
     - `brca1_rate` ($\beta$): Inferred 0.0456 yr$^{-1}$ [0.0409, 0.0504]; Status: `inferred`; Basis: ABC-SMC Gen 19; Sensitivity: Exp 02 LHS & PRCC (Fig S1), Exp 01 grid.
@@ -175,15 +175,15 @@ Compile the unified Supplementary Table S2 partitioned into Table S2a (Cell-scal
     - `alpha_bypass` ($p_{\text{bypass}}$): 0.0 baseline / grid [0.25, 1.00]; Status: `exploratory/reference setting`; Basis: Viability survival under BRCA1-first non-canonical order; Sensitivity: Exp 09 Fig S7.
     - Shared baseline rates: $d = 0.001$, $A_{\text{it}} = 10^{-5}$, $\kappa_{\text{BRCA1}} = 2.0$ (Status: `fixed structural assumption`).
   - Cross-Scale Parameter Translation Section explaining the scaling principles between 500-cell and 10^7-cell representations.
-- [ ] Export machine-readable CSV files:
+- [x] Export machine-readable CSV files:
   - `docs/supplementary/Supplementary_Table_S2a_cell_scale.csv`
   - `docs/supplementary/Supplementary_Table_S2b_tissue_scale.csv`
-- [ ] Reference Supplementary Table S2 in `README.md`, `tissue_scale/README.md`, and `results/paper_figures/README.md`.
-- [ ] Verify the changes in terms of typechecking, linting and tests using the project's verification command: `ctest --test-dir build --output-on-failure`. Fix issues if any.
+- [x] Reference Supplementary Table S2 in `README.md`, `tissue_scale/README.md`, and `results/paper_figures/README.md`.
+- [x] Verify the changes in terms of typechecking, linting and tests using the project's verification command: `ctest --test-dir build --output-on-failure`. Fix issues if any.
 - [ ] STOP. Present the changes to the user for review and suggest commit messages (or pull request titles, when the phases are implemented through pull requests). Do NOT proceed to the next phase until the user explicitly asks.
 
 ---
 
 ## Next Step
 
-The next step is to implement **Phase 3: Compilation and Publication of Supplementary Table S2**.
+All phases of this plan have been successfully implemented.
