@@ -17,7 +17,7 @@ Every figure is provided in three standardized publication formats:
 | **Figure 3** | `experiments/exp03_cs_abc_smc_calibration` | ABC-SMC calibration efficiency & posterior predictive cumulative risk curve | [PDF](Figure3.pdf), [EPS](Figure3.eps), [PNG](Figure3.png) |
 | **Figure 4** | `experiments/exp04_cs_emergent_features` | Emergent tumor features, age-stratified somatic BRCA1 composition & founder lineages (Kendall's $\tau_b = -0.25$) | [PDF](Figure4.pdf), [EPS](Figure4.eps), [PNG](Figure4.png) |
 | **Figure 5** | `experiments/exp05_cs_cancer_interception` | Precision cancer interception, timing of intervention ($D_1$ vs $D_2$) & dose response | [PDF](Figure5.pdf), [EPS](Figure5.eps), [PNG](Figure5.png) |
-| **Figure 6** | `experiments/exp07_ts_multiobjective_cohort` | Tissue-scale multiobjective validation ($10^7$ cells, $N=10,000$ virtual tissues) | [PDF](Figure6.pdf), [EPS](Figure6.eps), [PNG](Figure6.png) |
+| **Figure 6** | `experiments/exp07_ts_multiobjective_cohort` | Tissue-scale multiobjective validation ($10^7$ cells, age-stratified BRCA1 composition, Kendall's $\tau_b = -0.11$) | [PDF](Figure6.pdf), [EPS](Figure6.eps), [PNG](Figure6.png) |
 
 ---
 

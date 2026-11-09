@@ -17,7 +17,7 @@ implemented_by:
     version: "3.8"
     reasoning_effort: "low"
 
-last_implementation_at: "2026-11-09T07:54:00Z"
+last_implementation_at: "2026-11-09T08:53:00Z"
 has_completed_all_phases: "false"
 ---
 
@@ -113,7 +113,7 @@ Update `experiments/exp04_cs_emergent_features/run_emergent_features.py` and `pl
 Update `experiments/exp07_ts_multiobjective_cohort/plot_figure6.py` and `tissue_scale/scripts/make_figure6_sfig6.py` so that Figure 6b displays age-stratified stacked bars for `Predominant BRCA1+/-`, `Mixed`, and `Predominant BRCA1-/-` across the 7 age bins, and update Figure 6c to report Kendall's tau-b rank correlation between `detect_age` and `major_founders_5pct` instead of chi-square.
 
 #### To-do actions list
-- [ ] In `experiments/exp07_ts_multiobjective_cohort/plot_figure6.py`:
+- [x] In `experiments/exp07_ts_multiobjective_cohort/plot_figure6.py`:
   - Locate Panel b rendering (around line 97).
   - Replace the single horizontal bar calculation with age-stratified cross-tabulation:
     - `pos = final_df[final_df["detect_age"] >= 0].copy()`
@@ -127,12 +127,12 @@ Update `experiments/exp07_ts_multiobjective_cohort/plot_figure6.py` and `tissue_
   - In Panel c (lines 124-150):
     - Replace `chi2_contingency` with `tau_stat, tau_p = scipy.stats.kendalltau(pos["detect_age"], pos["major_founders_5pct"])`.
     - Update annotation on `ax_c`: `ax_c.text(0.95, 0.05, rf"Kendall's $\tau_b = {tau_stat:.2f}$ ($P = {tau_p:.1e}$)", transform=ax_c.transAxes, ha="right", fontsize=8.5)`.
-- [ ] Apply matching changes to `tissue_scale/scripts/make_figure6_sfig6.py` so the standalone tissue-scale package remains completely synchronized.
-- [ ] Run `python3 experiments/exp07_ts_multiobjective_cohort/plot_figure6.py` and `python3 tissue_scale/scripts/make_figure6_sfig6.py` to regenerate `Figure6.pdf`, `Figure6.png`, and `Figure6.eps`.
-- [ ] Copy generated Figure 6 files to `results/paper_figures/` (`cp experiments/exp07_ts_multiobjective_cohort/Figure6.* results/paper_figures/`).
-- [ ] Update `experiments/exp07_ts_multiobjective_cohort/README.md` and `tissue_scale/README.md` to reflect age-stratified Panel 6b and replace the chi-square mention with Kendall's tau-b statistic in Panel 6c.
-- [ ] Update `results/paper_figures/README.md` to reflect the updated Figure 6 description.
-- [ ] Verify the changes in terms of typechecking, linting and tests using the project's verification command: `ctest --test-dir build --output-on-failure`. Fix issues if any.
+- [x] Apply matching changes to `tissue_scale/scripts/make_figure6_sfig6.py` so the standalone tissue-scale package remains completely synchronized.
+- [x] Run `python3 experiments/exp07_ts_multiobjective_cohort/plot_figure6.py` and `python3 tissue_scale/scripts/make_figure6_sfig6.py` to regenerate `Figure6.pdf`, `Figure6.png`, and `Figure6.eps`.
+- [x] Copy generated Figure 6 files to `results/paper_figures/` (`cp experiments/exp07_ts_multiobjective_cohort/Figure6.* results/paper_figures/`).
+- [x] Update `experiments/exp07_ts_multiobjective_cohort/README.md` and `tissue_scale/README.md` to reflect age-stratified Panel 6b and replace the chi-square mention with Kendall's tau-b statistic in Panel 6c.
+- [x] Update `results/paper_figures/README.md` to reflect the updated Figure 6 description.
+- [x] Verify the changes in terms of typechecking, linting and tests using the project's verification command: `ctest --test-dir build --output-on-failure`. Fix issues if any.
 - [ ] STOP. Present the changes to the user for review and suggest commit messages (or pull request titles, when the phases are implemented through pull requests). Do NOT proceed to the next phase until the user explicitly asks.
 
 ---
@@ -186,4 +186,4 @@ Compile the unified Supplementary Table S2 partitioned into Table S2a (Cell-scal
 
 ## Next Step
 
-The next step is to implement **Phase 1: Cell-Scale Figure 4 Age Stratification and Statistical Update**.
+The next step is to implement **Phase 3: Compilation and Publication of Supplementary Table S2**.

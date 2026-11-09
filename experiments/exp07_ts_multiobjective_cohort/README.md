@@ -5,8 +5,8 @@ This experiment executes and visualizes the multiobjective calibrated tissue-sca
 
 ## Panels
 - **Panel a**: Age-dependent cumulative penetrance comparison (variable tissue restraint vs homogeneous restraint vs Kuchenbaecker et al. 2017 clinical penetrance).
-- **Panel b**: Somatic BRCA1 loss composition in emerging tumors (predominant $BRCA1^{+/-}$, mixed, predominant $BRCA1^{-/-}$).
-- **Panel c**: Founder-lineage complexity distribution across diagnosis age bins ($<30$, $30\text{--}39$, $\dots$, $80$).
+- **Panel b**: Age-stratified somatic BRCA1 loss composition in emerging tumors (predominant $BRCA1^{+/-}$, mixed, predominant $BRCA1^{-/-}$).
+- **Panel c**: Founder-lineage complexity distribution across diagnosis age bins ($<30$, $30\text{--}39$, $\dots$, $80$) with Kendall's tau-b rank correlation.
 - **Panel d**: Impact of local tissue barrier heterogeneity ($\sigma_{\theta_{D2}} \in \{0.20, 0.38, 0.60\}$).
 - **Panel e**: Somatic driver-mediated checkpoint relaxation ($\gamma \in \{10^{-4}, 2\times 10^{-4}, 3\times 10^{-4}\}$, with inset quantifying % tumors enabled by checkpoint bypass).
 

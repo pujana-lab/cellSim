@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from scipy.stats import chi2_contingency
+from scipy.stats import chi2_contingency, kendalltau
 
 # Publication styling
 plt.rcParams.update({
@@ -98,7 +98,7 @@ def plot_figure_6_complete(
     ax_a.text(0.95, 0.06, f"Variable restraint wSSE = {wsse_final:.2f}", transform=ax_a.transAxes, ha="right", fontsize=8)
 
     # =========================================================================
-    # Panel b: Somatic BRCA1 loss composition in emerging tumors
+    # Panel b: Somatic BRCA1 loss composition in emerging tumors (age-stratified)
     # =========================================================================
     ax_b = fig.add_subplot(gs[0, 1])
     pos = final_df[final_df["detect_age"] >= 0].copy()
@@ -108,33 +108,47 @@ def plot_figure_6_complete(
     p_mixed = 100.0 * ((null_frac > 0.5) & (null_frac <= 0.75)).mean()
     p_null = 100.0 * (null_frac > 0.75).mean()
 
-    y_pos = [0]
-    ax_b.barh(y_pos, [p_wt], color="#3498db", edgecolor="#2c3e50", height=0.45, label="Predominant BRCA1+/-")
-    ax_b.barh(y_pos, [p_mixed], left=[p_wt], color="#9b59b6", edgecolor="#2c3e50", height=0.45, label="Mixed")
-    ax_b.barh(y_pos, [p_null], left=[p_wt + p_mixed], color="#e67e22", edgecolor="#2c3e50", height=0.45, label="Predominant BRCA1-/-")
+    pos["age_bin"] = pd.cut(pos["detect_age"], [-np.inf, 29, 39, 49, 59, 69, 79, 80], labels=AGE_BIN_LABELS)
+    pos["brca1_status"] = pd.cut(
+        pos["brca1_null_fraction"],
+        bins=[-np.inf, 0.50, 0.75, np.inf],
+        labels=["Predominant BRCA1+/-", "Mixed", "Predominant BRCA1-/-"]
+    )
 
-    ax_b.text(p_wt / 2.0, 0, f"{p_wt:.0f}%", ha="center", va="center", color="white", fontweight="bold", fontsize=9)
-    ax_b.text(p_wt + p_mixed / 2.0, 0, f"{p_mixed:.0f}%", ha="center", va="center", color="white", fontweight="bold", fontsize=9)
-    ax_b.text(p_wt + p_mixed + p_null / 2.0, 0, f"{p_null:.0f}%", ha="center", va="center", color="white", fontweight="bold", fontsize=9)
+    tab_b = pd.crosstab(pos["age_bin"], pos["brca1_status"]).reindex(
+        index=AGE_BIN_LABELS,
+        columns=["Predominant BRCA1+/-", "Mixed", "Predominant BRCA1-/-"],
+        fill_value=0
+    )
+    pct_b = tab_b.div(tab_b.sum(axis=1), axis=0) * 100.0
 
-    ax_b.set_xlim(0, 100)
-    ax_b.set_ylim(-0.5, 0.5)
-    ax_b.set_yticks([])
-    ax_b.set_xlabel("Tumor-positive tissues (%)")
-    ax_b.grid(True, linestyle="--", axis="x")
-    ax_b.legend(frameon=True, facecolor="white", edgecolor="none", loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=3, fontsize=7.8)
+    x_idx_b = np.arange(len(AGE_BIN_LABELS))
+    bottom_b = np.zeros(len(AGE_BIN_LABELS))
+    colors_b = ["#3498db", "#9b59b6", "#e67e22"]
+
+    for cat_name, col_b in zip(["Predominant BRCA1+/-", "Mixed", "Predominant BRCA1-/-"], colors_b):
+        vb = pct_b[cat_name].to_numpy(float)
+        ax_b.bar(x_idx_b, vb, bottom=bottom_b, color=col_b, label=cat_name, width=0.55, edgecolor="#2c3e50", lw=0.6)
+        bottom_b += vb
+
+    ax_b.set_xticks(x_idx_b)
+    ax_b.set_xticklabels(AGE_BIN_LABELS, rotation=35, ha="right")
+    ax_b.set_xlabel("Age at first tumor-positive detection (years)")
+    ax_b.set_ylabel("Tumor-positive tissues (%)")
+    ax_b.set_ylim(0, 105)
+    ax_b.grid(True, linestyle="--", axis="y")
+    ax_b.legend(frameon=True, facecolor="white", edgecolor="none", loc="upper right", fontsize=7.2)
     ax_b.set_title("b   BRCA1 status in emerging tumors", fontweight="bold", loc="left")
 
     # =========================================================================
     # Panel c: Founder-lineage complexity by detection age
     # =========================================================================
     ax_c = fig.add_subplot(gs[1, 1])
-    pos["age_bin"] = pd.cut(pos["detect_age"], [-np.inf, 29, 39, 49, 59, 69, 79, 80], labels=AGE_BIN_LABELS)
     pos["founder_cat"] = pd.cut(pos["major_founders_5pct"], [0, 1, 2, 3, np.inf], labels=["1", "2", "3", "≥4"])
 
     tab = pd.crosstab(pos["age_bin"], pos["founder_cat"]).reindex(index=AGE_BIN_LABELS, columns=["1", "2", "3", "≥4"], fill_value=0)
     pct = tab.div(tab.sum(axis=1), axis=0) * 100.0
-    _, p_val, _, _ = chi2_contingency(tab.values)
+    tau_stat, tau_p = kendalltau(pos["detect_age"], pos["major_founders_5pct"])
 
     x_idx = np.arange(len(AGE_BIN_LABELS))
     bottom = np.zeros(len(AGE_BIN_LABELS))
@@ -153,7 +167,10 @@ def plot_figure_6_complete(
     ax_c.grid(True, linestyle="--", axis="y")
     ax_c.legend(title="Tumoral founder lineages (n)", frameon=True, facecolor="white", edgecolor="none", loc="lower right", fontsize=7.5, title_fontsize=8)
     ax_c.set_title("c   Founder-lineage complexity by detection age", fontweight="bold", loc="left")
-    ax_c.text(0.95, 0.05, r"$\chi^2$ P = " + f"{p_val:.0e}", transform=ax_c.transAxes, ha="right", fontsize=8.5)
+    if tau_p < 1e-15:
+        ax_c.text(0.95, 0.05, rf"Kendall's $\tau_b = {tau_stat:.2f}$ ($P < 10^{{-15}}$)", transform=ax_c.transAxes, ha="right", fontsize=8.2)
+    else:
+        ax_c.text(0.95, 0.05, rf"Kendall's $\tau_b = {tau_stat:.2f}$ ($P = {tau_p:.1e}$)", transform=ax_c.transAxes, ha="right", fontsize=8.2)
 
     # =========================================================================
     # Panel d: Effect of D2-threshold heterogeneity on penetrance (Simulated)

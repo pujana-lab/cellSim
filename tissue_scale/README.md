@@ -21,8 +21,8 @@ From the frozen independent 10,000-tissue validation (`data/final_multiobjective
 
 ### 1. Main Text Figure 6 (`Figure6.pdf`, `Figure6.png`)
 - **Panel a**: Cumulative penetrance comparison (Observed 95% CI vs Homogeneous restraint vs Variable $D_2$ restraint).
-- **Panel b**: Somatic BRCA1 loss composition in emerging tumors (BRCA1$^{+/-}$ predominant, Mixed, BRCA1$^{-/-}$ predominant).
-- **Panel c**: Distribution of substantial founder lineages across age at first tumor detection ($\chi^2 = 121.96, p = 1.79 \times 10^{-17}$).
+- **Panel b**: Age-stratified somatic BRCA1 loss composition in emerging tumors (BRCA1$^{+/-}$ predominant, Mixed, BRCA1$^{-/-}$ predominant).
+- **Panel c**: Distribution of substantial founder lineages across age at first tumor detection (Kendall's $\tau_b = -0.11, p = 1.05 \times 10^{-23}$; reference $\chi^2 = 121.96, p = 1.79 \times 10^{-17}$).
 
 ### 2. Supplementary Figure S7 (`FigureS7.pdf`, `FigureS7.png`)
 - **Panel a**: Cumulative penetrance fit under the homogeneous tissue restraint model ($wSSE = 48.96$).
