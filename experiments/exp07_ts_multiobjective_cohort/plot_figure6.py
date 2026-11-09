@@ -112,18 +112,25 @@ def plot_figure_6(
 
     tab_b = pd.crosstab(pos["age_bin"], pos["brca1_status"]).reindex(
         index=AGE_BIN_LABELS,
-        columns=["Predominant BRCA1+/-", "Mixed", "Predominant BRCA1-/-"],
+        columns=["Predominant BRCA1-/-", "Mixed", "Predominant BRCA1+/-"],
         fill_value=0
     )
     pct_b = tab_b.div(tab_b.sum(axis=1), axis=0) * 100.0
 
     x_idx_b = np.arange(len(AGE_BIN_LABELS))
     bottom_b = np.zeros(len(AGE_BIN_LABELS))
-    colors_b = ["#3498db", "#9b59b6", "#e67e22"]
+    # Harmonized palette matching Figure 4b:
+    # Deep Navy for BRCA1-/-, Amber for Mixed, Sky Blue for BRCA1+/-
+    colors_b = ["#1E3A8A", "#F59E0B", "#93C5FD"]
 
-    for cat_name, col_b in zip(["Predominant BRCA1+/-", "Mixed", "Predominant BRCA1-/-"], colors_b):
+    # Bottom: Predominant BRCA1-/-, Middle: Mixed, Top: Predominant BRCA1+/-
+    for cat_name, label_name, col_b in zip(
+        ["Predominant BRCA1-/-", "Mixed", "Predominant BRCA1+/-"],
+        ["BRCA1-/- (null)", "Mixed", "BRCA1+/- (heterozygous)"],
+        colors_b
+    ):
         vb = pct_b[cat_name].to_numpy(float)
-        ax_b.bar(x_idx_b, vb, bottom=bottom_b, color=col_b, label=cat_name, width=0.55, edgecolor="#2c3e50", lw=0.6)
+        ax_b.bar(x_idx_b, vb, bottom=bottom_b, color=col_b, label=label_name, width=0.55, edgecolor="#2c3e50", lw=0.6)
         bottom_b += vb
 
     ax_b.set_xticks(x_idx_b)

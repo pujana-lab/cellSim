@@ -188,27 +188,30 @@ def render_figure4(data_dir: Path, out_dir: Path) -> Tuple[Path, Path]:
     fig.text(0.07, 0.48, "BRCA1 status in emerging tumors", fontsize=11, fontweight="bold", va="top")
 
     ax_b = fig.add_axes([0.08, 0.12, 0.39, 0.30])
-    colors_b = ["#93C5FD", "#FBBF24", "#1E3A8A"]
+    # Unified publication color palette:
+    # Deep Navy for BRCA1-/- (base), Amber for Mixed (middle), Sky Blue for BRCA1+/- (top)
+    colors_b = ["#1E3A8A", "#F59E0B", "#93C5FD"]
 
     if df_geno_age is not None:
         ages_b = df_geno_age["age_group"].tolist()
         xb = np.arange(len(ages_b))
         width = 0.65
-        ppm = df_geno_age["exclusively_brca1_pm_pct"].to_numpy(float)
-        pmix = df_geno_age["mixed_pct"].to_numpy(float)
         pmm = df_geno_age["exclusively_brca1_mm_pct"].to_numpy(float)
+        pmix = df_geno_age["mixed_pct"].to_numpy(float)
+        ppm = df_geno_age["exclusively_brca1_pm_pct"].to_numpy(float)
 
-        ax_b.bar(xb, ppm, width, color=colors_b[0], label="Exclusively BRCA1+/-")
-        ax_b.bar(xb, pmix, width, bottom=ppm, color=colors_b[1], label="Mixed")
-        ax_b.bar(xb, pmm, width, bottom=ppm + pmix, color=colors_b[2], label="Exclusively BRCA1-/-")
+        # Bottom: BRCA1-/-, Middle: Mixed, Top: BRCA1+/-
+        ax_b.bar(xb, pmm, width, color=colors_b[0], label="BRCA1-/- (null)", edgecolor="#111827", lw=0.5)
+        ax_b.bar(xb, pmix, width, bottom=pmm, color=colors_b[1], label="Mixed", edgecolor="#111827", lw=0.5)
+        ax_b.bar(xb, ppm, width, bottom=pmm + pmix, color=colors_b[2], label="BRCA1+/- (heterozygous)", edgecolor="#111827", lw=0.5)
 
         ax_b.set_xticks(xb)
         ax_b.set_xticklabels(["<30", "30–39", "40–49", "50–59", "60–69", "70–79", "80"], fontsize=8.5)
         ax_b.set_xlabel("Age at first tumor-positive detection (years)", fontsize=9.5)
         ax_b.set_ylabel("Tumor-positive tissues (%)", fontsize=9.5)
-        ax_b.set_ylim(0, 100)
+        ax_b.set_ylim(0, 105)
         ax_b.tick_params(length=2.5, labelsize=8.5)
-        ax_b.legend(loc="upper right", fontsize=7.8, frameon=True, edgecolor="#E5E7EB")
+        ax_b.legend(loc="upper right", fontsize=7.5, frameon=True, edgecolor="#E5E7EB")
     else:
         df_geno = pd.read_csv(data_dir / "Figure4b_genotype_composition.csv")
         pct_pm = float(df_geno.loc[df_geno["category"] == "Exclusively BRCA1+/-", "percentage"].iloc[0])
