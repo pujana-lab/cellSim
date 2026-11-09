@@ -1,2 +1,3 @@
 test,outcome,statistic,df,p_value,n_tumors
-chi-square,founder category across age groups,1141.7885692634507,18,3.287043131119488e-231,13309
+kendall-tau-b,founder count across onset age,-0.24612431752381242,,4.233038850267696e-264,13309
+chi-square,founder category across age groups,1141.7885692634507,18.0,3.287043131119488e-231,13309

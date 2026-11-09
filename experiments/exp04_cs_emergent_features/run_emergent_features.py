@@ -18,7 +18,7 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2_contingency
+from scipy.stats import chi2_contingency, kendalltau
 
 AGE_ORDER = ["<30", "30-39", "40-49", "50-59", "60-69", "70-79", "80"]
 GENO_ORDER = ["Exclusively BRCA1+/-", "Mixed", "Exclusively BRCA1-/-"]
@@ -130,9 +130,28 @@ def summarize_features(raw_df: pd.DataFrame, out_dir: Path):
         rows_b.append({"category": cat, "percentage": pct, "label": f"{pct:.0f}%"})
     df_b = pd.DataFrame(rows_b)
     df_b.to_csv(out_dir / "Figure4b_genotype_composition.csv", index=False)
-    print("\n[Figure 4b Summary - BRCA1 Genotype Breakdown]:")
+    print("\n[Figure 4b Summary - BRCA1 Genotype Breakdown (Global)]:")
     for r in rows_b:
         print(f"  {r['category']:<25}: {r['percentage']:.2f}%")
+
+    # 1b. Figure 4b Stratified: Genotype Breakdown across Age Groups
+    rows_b_age = []
+    for ag in AGE_ORDER:
+        sub = d[d["age_group"] == ag]
+        ag_w = sub["tissue_weight"].sum()
+        pm_w = sub.loc[sub["genotype_cat"] == "Exclusively BRCA1+/-", "tissue_weight"].sum()
+        mix_w = sub.loc[sub["genotype_cat"] == "Mixed", "tissue_weight"].sum()
+        mm_w = sub.loc[sub["genotype_cat"] == "Exclusively BRCA1-/-", "tissue_weight"].sum()
+        rows_b_age.append({
+            "age_group": ag,
+            "exclusively_brca1_pm_pct": round((pm_w / ag_w * 100.0) if ag_w > 0 else 0.0, 2),
+            "mixed_pct": round((mix_w / ag_w * 100.0) if ag_w > 0 else 0.0, 2),
+            "exclusively_brca1_mm_pct": round((mm_w / ag_w * 100.0) if ag_w > 0 else 0.0, 2),
+        })
+    df_b_age = pd.DataFrame(rows_b_age)
+    df_b_age.to_csv(out_dir / "Figure4b_genotype_composition_by_age.csv", index=False)
+    print("\n[Figure 4b Summary - BRCA1 Genotype Breakdown by Age Group]:")
+    print(df_b_age.to_string(index=False))
 
     # 2. Figure 4c: Founder Lineages across Age Groups
     rows_c = []
@@ -151,20 +170,32 @@ def summarize_features(raw_df: pd.DataFrame, out_dir: Path):
     print("\n[Figure 4c Summary - Founder Lineage Stack Percentages]:")
     print(df_c.to_string(index=False))
 
-    # 3. Chi-square test
+    # 3. Statistical Tests: Kendall's tau-b rank correlation (ordinal trend) and chi-square reference
+    tau_stat, tau_p = kendalltau(d["onset_year"], d["founder_count"])
     ct = pd.crosstab(d["age_group"], d["founder_category"]).reindex(index=AGE_ORDER, columns=FOUNDER_ORDER, fill_value=0)
     chi2_val, p_val, dof, _ = chi2_contingency(ct)
-    print(f"\n[Statistical Test]:")
-    print(f"  Chi-square = {chi2_val:.2f}, df = {dof}, P-value = {p_val:.2e} (n = {len(d):,} tumor-positive tissues)")
+    print(f"\n[Statistical Tests]:")
+    print(f"  Kendall's tau-b = {tau_stat:.4f}, P-value = {tau_p:.2e} (n = {len(d):,} tumor-positive tissues)")
+    print(f"  Chi-square = {chi2_val:.2f}, df = {dof}, P-value = {p_val:.2e}")
 
-    df_test = pd.DataFrame([{
-        "test": "chi-square",
-        "outcome": "founder category across age groups",
-        "statistic": chi2_val,
-        "df": dof,
-        "p_value": p_val,
-        "n_tumors": len(d)
-    }])
+    df_test = pd.DataFrame([
+        {
+            "test": "kendall-tau-b",
+            "outcome": "founder count across onset age",
+            "statistic": tau_stat,
+            "df": np.nan,
+            "p_value": tau_p,
+            "n_tumors": len(d),
+        },
+        {
+            "test": "chi-square",
+            "outcome": "founder category across age groups",
+            "statistic": chi2_val,
+            "df": dof,
+            "p_value": p_val,
+            "n_tumors": len(d),
+        }
+    ])
     df_test.to_csv(out_dir / "Figure4_statistical_tests.csv", index=False)
 
 

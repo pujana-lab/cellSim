@@ -77,7 +77,11 @@ def weighted_stats(x: np.ndarray, w: np.ndarray) -> Tuple[float, float, float]:
 def render_figure4(data_dir: Path, out_dir: Path) -> Tuple[Path, Path]:
     df_part = pd.read_csv(data_dir / "Figure4a_parameters.csv")
     df_corr = pd.read_csv(data_dir / "Figure4a_correlations.csv", index_col=0)
-    df_geno = pd.read_csv(data_dir / "Figure4b_genotype_composition.csv")
+    geno_age_file = data_dir / "Figure4b_genotype_composition_by_age.csv"
+    if geno_age_file.exists():
+        df_geno_age = pd.read_csv(geno_age_file)
+    else:
+        df_geno_age = None
     df_found = pd.read_csv(data_dir / "Figure4c_founder_lineages.csv")
 
     w = df_part["weight"].to_numpy(float, copy=True)
@@ -178,32 +182,47 @@ def render_figure4(data_dir: Path, out_dir: Path) -> Tuple[Path, Path]:
     ax_corr.tick_params(length=2.0)
 
     # =========================================================================
-    # Panel b: BRCA1 status in emerging tumors
+    # Panel b: BRCA1 status in emerging tumors (age-stratified)
     # =========================================================================
     fig.text(0.04, 0.48, "b", fontsize=14, fontweight="bold", va="top")
     fig.text(0.07, 0.48, "BRCA1 status in emerging tumors", fontsize=11, fontweight="bold", va="top")
 
-    ax_b = fig.add_axes([0.08, 0.16, 0.38, 0.25])
-    pct_pm = float(df_geno.loc[df_geno["category"] == "Exclusively BRCA1+/-", "percentage"].iloc[0])
-    pct_mix = float(df_geno.loc[df_geno["category"] == "Mixed", "percentage"].iloc[0])
-    pct_mm = float(df_geno.loc[df_geno["category"] == "Exclusively BRCA1-/-", "percentage"].iloc[0])
-
+    ax_b = fig.add_axes([0.08, 0.12, 0.39, 0.30])
     colors_b = ["#93C5FD", "#FBBF24", "#1E3A8A"]
-    ax_b.barh([0], [pct_pm], color=colors_b[0], edgecolor="none", height=0.45, label="Exclusively BRCA1+/-")
-    ax_b.barh([0], [pct_mix], left=[pct_pm], color=colors_b[1], edgecolor="none", height=0.45, label="Mixed")
-    ax_b.barh([0], [pct_mm], left=[pct_pm + pct_mix], color=colors_b[2], edgecolor="none", height=0.45, label="Exclusively BRCA1-/-")
 
-    # Percentage text labels inside bars
-    ax_b.text(pct_pm / 2, 0, f"{pct_pm:.0f}%", ha="center", va="center", color="#111827", fontsize=10, fontweight="bold")
-    ax_b.text(pct_pm + pct_mix / 2, 0, f"{pct_mix:.0f}%", ha="center", va="center", color="#111827", fontsize=10, fontweight="bold")
-    ax_b.text(pct_pm + pct_mix + pct_mm / 2, 0, f"{pct_mm:.0f}%", ha="center", va="center", color="white", fontsize=10, fontweight="bold")
+    if df_geno_age is not None:
+        ages_b = df_geno_age["age_group"].tolist()
+        xb = np.arange(len(ages_b))
+        width = 0.65
+        ppm = df_geno_age["exclusively_brca1_pm_pct"].to_numpy(float)
+        pmix = df_geno_age["mixed_pct"].to_numpy(float)
+        pmm = df_geno_age["exclusively_brca1_mm_pct"].to_numpy(float)
 
-    ax_b.set_xlim(0, 100)
-    ax_b.set_ylim(-0.4, 0.8)
-    ax_b.set_xlabel("Tumor-positive tissues (%)", fontsize=10)
-    ax_b.set_yticks([])
-    ax_b.tick_params(length=2.5, labelsize=9)
-    ax_b.legend(loc="upper center", bbox_to_anchor=(0.5, 1.25), ncol=3, fontsize=8, frameon=False)
+        ax_b.bar(xb, ppm, width, color=colors_b[0], label="Exclusively BRCA1+/-")
+        ax_b.bar(xb, pmix, width, bottom=ppm, color=colors_b[1], label="Mixed")
+        ax_b.bar(xb, pmm, width, bottom=ppm + pmix, color=colors_b[2], label="Exclusively BRCA1-/-")
+
+        ax_b.set_xticks(xb)
+        ax_b.set_xticklabels(["<30", "30–39", "40–49", "50–59", "60–69", "70–79", "80"], fontsize=8.5)
+        ax_b.set_xlabel("Age at first tumor-positive detection (years)", fontsize=9.5)
+        ax_b.set_ylabel("Tumor-positive tissues (%)", fontsize=9.5)
+        ax_b.set_ylim(0, 100)
+        ax_b.tick_params(length=2.5, labelsize=8.5)
+        ax_b.legend(loc="upper right", fontsize=7.8, frameon=True, edgecolor="#E5E7EB")
+    else:
+        df_geno = pd.read_csv(data_dir / "Figure4b_genotype_composition.csv")
+        pct_pm = float(df_geno.loc[df_geno["category"] == "Exclusively BRCA1+/-", "percentage"].iloc[0])
+        pct_mix = float(df_geno.loc[df_geno["category"] == "Mixed", "percentage"].iloc[0])
+        pct_mm = float(df_geno.loc[df_geno["category"] == "Exclusively BRCA1-/-", "percentage"].iloc[0])
+
+        ax_b.barh([0], [pct_pm], color=colors_b[0], edgecolor="none", height=0.45, label="Exclusively BRCA1+/-")
+        ax_b.barh([0], [pct_mix], left=[pct_pm], color=colors_b[1], edgecolor="none", height=0.45, label="Mixed")
+        ax_b.barh([0], [pct_mm], left=[pct_pm + pct_mix], color=colors_b[2], edgecolor="none", height=0.45, label="Exclusively BRCA1-/-")
+        ax_b.set_xlim(0, 100)
+        ax_b.set_ylim(-0.4, 0.8)
+        ax_b.set_xlabel("Tumor-positive tissues (%)", fontsize=10)
+        ax_b.set_yticks([])
+        ax_b.legend(loc="upper center", bbox_to_anchor=(0.5, 1.25), ncol=3, fontsize=8, frameon=False)
 
     # =========================================================================
     # Panel c: Founder-lineage complexity by detection age
@@ -235,13 +254,22 @@ def render_figure4(data_dir: Path, out_dir: Path) -> Tuple[Path, Path]:
     ax_c.tick_params(length=2.5, labelsize=8.5)
 
     test_csv = data_dir / "Figure4_statistical_tests.csv"
+    stat_text = r"Kendall's $\tau_b = -0.25$ ($P < 10^{-15}$)"
     if test_csv.exists():
         df_stat = pd.read_csv(test_csv)
-        p_val = float(df_stat["p_value"].iloc[0])
-        mantissa, exp = f"{p_val:.1e}".split("e")
-        stat_text = rf"$\chi^2\ P = {mantissa} \times 10^{{{int(exp)}}}$"
-    else:
-        stat_text = r"$\chi^2\ P = 1.9 \times 10^{-239}$"
+        tau_rows = df_stat[df_stat["test"] == "kendall-tau-b"]
+        if not tau_rows.empty:
+            tau_val = float(tau_rows["statistic"].iloc[0])
+            p_val = float(tau_rows["p_value"].iloc[0])
+            if p_val < 1e-15:
+                stat_text = rf"Kendall's $\tau_b = {tau_val:.2f}$ ($P < 10^{{-15}}$)"
+            else:
+                mantissa, exp = f"{p_val:.1e}".split("e")
+                stat_text = rf"Kendall's $\tau_b = {tau_val:.2f}$ ($P = {mantissa} \times 10^{{{int(exp)}}}$)"
+        else:
+            p_val = float(df_stat["p_value"].iloc[0])
+            mantissa, exp = f"{p_val:.1e}".split("e")
+            stat_text = rf"$\chi^2\ P = {mantissa} \times 10^{{{int(exp)}}}$"
 
     ax_c.text(0.70, 0.68, stat_text, transform=ax_c.transAxes,
               fontsize=8.5, fontstyle="italic", ha="center")
