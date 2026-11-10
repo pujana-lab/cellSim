@@ -68,10 +68,10 @@ def plot_figure_s7(data_path: Path, output_dir: Path) -> tuple[Path, Path]:
     fig, axes = plt.subplots(1, 2, figsize=(9.2, 5.0), gridspec_kw={"wspace": 0.38})
     fig.suptitle("Figure S7", fontsize=11, fontweight="bold", x=0.10, y=0.98)
 
-    # --- Left Heatmap: Penetrance deviation (SSE) ---
+    # --- Left Heatmap: Penetrance deviation (Unweighted SSE) ---
     ax_left = axes[0]
-    im_left = ax_left.imshow(sse_matrix, cmap="Blues", aspect="auto", vmin=10, vmax=280)
-    ax_left.set_title("Penetrance deviation (SSE)", fontsize=10, pad=12, fontweight="medium")
+    im_left = ax_left.imshow(sse_matrix, cmap="Blues", aspect="auto", vmin=10, vmax=90)
+    ax_left.set_title("Penetrance deviation\n(Unweighted SSE)", fontsize=10, pad=6, fontweight="medium")
 
     ax_left.set_xticks(np.arange(len(COL_LABELS)))
     ax_left.set_xticklabels(COL_LABELS)
@@ -83,19 +83,19 @@ def plot_figure_s7(data_path: Path, output_dir: Path) -> tuple[Path, Path]:
     for i in range(sse_matrix.shape[0]):
         for j in range(sse_matrix.shape[1]):
             val = int(round(sse_matrix[i, j]))
-            color = "white" if sse_matrix[i, j] > 160 else "black"
+            color = "white" if sse_matrix[i, j] > 55 else "black"
             ax_left.text(j, i, f"{val}", ha="center", va="center", color=color, fontsize=8.5)
 
     # Left colorbar
     divider_left = make_axes_locatable(ax_left)
     cax_left = divider_left.append_axes("bottom", size="5%", pad=0.55)
     cb_left = fig.colorbar(im_left, cax=cax_left, orientation="horizontal")
-    cb_left.set_label("SSE", fontsize=8.5)
+    cb_left.set_label("Unweighted SSE", fontsize=8.5)
     cb_left.ax.tick_params(labelsize=8)
 
     # --- Right Heatmap: Tumors enabled by checkpoint relaxation (%) ---
     ax_right = axes[1]
-    im_right = ax_right.imshow(pct_matrix, cmap="Oranges", aspect="auto", vmin=0, vmax=30)
+    im_right = ax_right.imshow(pct_matrix, cmap="Oranges", aspect="auto", vmin=0, vmax=10)
     ax_right.set_title("Tumors enabled\nby checkpoint relaxation", fontsize=10, pad=6, fontweight="medium")
 
     ax_right.set_xticks(np.arange(len(COL_LABELS)))
@@ -108,7 +108,7 @@ def plot_figure_s7(data_path: Path, output_dir: Path) -> tuple[Path, Path]:
     for i in range(pct_matrix.shape[0]):
         for j in range(pct_matrix.shape[1]):
             val = pct_matrix[i, j]
-            color = "white" if pct_matrix[i, j] > 18.0 else "black"
+            color = "white" if pct_matrix[i, j] > 6.0 else "black"
             ax_right.text(j, i, f"{val:.1f}", ha="center", va="center", color=color, fontsize=8.5)
 
     # Right colorbar

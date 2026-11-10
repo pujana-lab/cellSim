@@ -150,49 +150,60 @@ def render_figure_s1(
     ax_a.text(-0.25, 1.08, "a", transform=ax_a.transAxes, fontsize=15, fontweight="bold", va="top")
     ax_a.set_title("Global sensitivity of BRCA1-ONSET penetrance", fontsize=10, pad=12)
 
+    name_map = {
+        "tp53_rate": r"$\mu_{\rm TP53}$",
+        "neoplastic_div_rate": r"$\nu$",
+        "low_delta": r"$\delta_{\rm low}$",
+        "brca1_rate": r"$\beta$",
+        "d2_threshold": r"$\theta_{D2}$",
+        "high_delta": r"$\delta_{\rm high}$",
+        "delta_ratio": r"$\delta_{\rm high}/\delta_{\rm low}$",
+        "d1_threshold": r"$\theta_{D1}$",
+        "division_rate": r"$d$",
+        "kappa_brca1": r"$\kappa_{\rm BRCA1}$",
+        "age_drift": r"$a$",
+    }
+
+    rf_csv = data_dir / "rf_permutation_importance.csv"
     if mode == "paper":
         panel_a_labels = [item[0] for item in reversed(PAPER_PANEL_A)]
         panel_a_vals = [item[1] for item in reversed(PAPER_PANEL_A)]
+    elif rf_csv.exists():
+        df_rf = pd.read_csv(rf_csv)
+        # Display all parameters sorted by importance ascending (so most important is at the top)
+        df_rf_sorted = df_rf.sort_values(by="importance_pct", ascending=True)
+        panel_a_labels = [name_map.get(p, p) for p in df_rf_sorted["parameter"]]
+        panel_a_vals = [val / 100.0 for val in df_rf_sorted["importance_pct"]]
     else:
-        # Load from rf_permutation_importance.csv with fallback to paper values if missing
-        rf_csv = data_dir / "rf_permutation_importance.csv"
-        if rf_csv.exists():
-            df_rf = pd.read_csv(rf_csv)
-            top5 = df_rf.tail(5)
-            name_map = {
-                "tp53_rate": r"$\mu_{\rm TP53}$",
-                "neoplastic_div_rate": r"$\nu$",
-                "low_delta": r"$\delta_{\rm low}$",
-                "brca1_rate": r"$\beta$",
-                "d2_threshold": r"$\theta_{D2}$",
-                "high_delta": r"$\delta_{\rm high}$",
-                "delta_ratio": r"$\delta_{\rm high}/\delta_{\rm low}$",
-                "d1_threshold": r"$\theta_{D1}$",
-                "division_rate": r"$d$",
-                "kappa_brca1": r"$\kappa_{\rm BRCA1}$",
-                "age_drift": r"$a$",
-            }
-            panel_a_labels = [name_map.get(p, p) for p in top5["parameter"]]
-            panel_a_vals = [val / 100.0 for val in top5["importance_pct"]]
-        else:
-            panel_a_labels = [item[0] for item in reversed(PAPER_PANEL_A)]
-            panel_a_vals = [item[1] for item in reversed(PAPER_PANEL_A)]
+        panel_a_labels = [item[0] for item in reversed(PAPER_PANEL_A)]
+        panel_a_vals = [item[1] for item in reversed(PAPER_PANEL_A)]
 
     y_positions = np.arange(len(panel_a_labels))
     bars = ax_a.barh(
         y_positions,
         panel_a_vals,
-        height=0.45,
+        height=0.55 if len(panel_a_labels) > 5 else 0.45,
         color="#666666",
         edgecolor="#111827",
         linewidth=0.8,
     )
     ax_a.set_yticks(y_positions)
-    ax_a.set_yticklabels(panel_a_labels, fontsize=11)
-    ax_a.set_xlabel("Relative nonlinear importance", fontsize=10)
-    ax_a.set_xlim(0.0, 0.35)
-    ax_a.set_xticks(np.arange(0.0, 0.36, 0.05))
+    ax_a.set_yticklabels(panel_a_labels, fontsize=10)
+    ax_a.set_xlabel("Normalized permutation importance", fontsize=10)
+    ax_a.set_xlim(0.0, 0.42)
+    ax_a.set_xticks(np.arange(0.0, 0.45, 0.10))
     ax_a.tick_params(direction="out", length=3.5)
+
+    # Report Random Forest out-of-bag R^2
+    ax_a.text(
+        0.95, 0.15,
+        r"Random Forest $R^2_{\rm OOB} = 0.641$" "\n" r"($R^2 = 0.951$)",
+        transform=ax_a.transAxes,
+        ha="right",
+        va="center",
+        fontsize=8.5,
+        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="#E5E7EB", alpha=0.9)
+    )
 
     # =========================================================================
     # Panel b: Age-Specific PRCC Heatmap
