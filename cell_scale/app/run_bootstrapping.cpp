@@ -89,10 +89,14 @@ RunResult runOnce(int seed, int n_cells, int max_t,
                   double neoplastic_div_rate = 0.1,
                   double division_rate = 0.001,
                   double kappa_brca1 = 2.0,
-                  double age_drift = 1e-5)
+                  double age_drift = 1e-5,
+                  int max_healthy_cells = 1000)
 {
     auto logger = std::make_shared<domain::adapters::NullLogger>();
     application::Simulation sim(max_t);
+    if (max_healthy_cells >= 0) {
+        sim.setMaxHealthyCells(static_cast<std::size_t>(max_healthy_cells));
+    }
 
     for (int i = 0; i < n_cells; ++i) {
         // makeDefaultGenome initialises BRCA1 +/- and TP53 +/+ by design.
@@ -151,7 +155,8 @@ std::vector<RunResult> runBatch(int n_runs, int n_cells, int max_t,
                                 int seed_offset = 0,
                                 double division_rate = 0.001,
                                 double kappa_brca1 = 2.0,
-                                double age_drift = 1e-5)
+                                double age_drift = 1e-5,
+                                int max_healthy_cells = 1000)
 {
     std::vector<RunResult> results(n_runs, {-1, -1, 0.0});
 #ifdef BOOTSTRAPPING_USE_OMP
@@ -165,7 +170,8 @@ std::vector<RunResult> runBatch(int n_runs, int n_cells, int max_t,
                              tumor_threshold,
                              big_bang, neoplastic_div_rate,
                              division_rate,
-                             kappa_brca1, age_drift);
+                             kappa_brca1, age_drift,
+                             max_healthy_cells);
     return results;
 }
 
@@ -356,6 +362,8 @@ int main(int argc, char* argv[]) {
             cxxopts::value<double>()->default_value("2.0"))
         ("age-drift",       "Annual age drift added to D1 and D2 per year",
             cxxopts::value<double>()->default_value("0.00001"))
+        ("max-healthy-cells", "Carrying capacity cap for healthy cells (0=unlimited)",
+            cxxopts::value<int>()->default_value("1000"))
         ("seed-offset",     "Seed offset for bootstrap runs (supports replicated evaluations)",
             cxxopts::value<int>()->default_value("0"))
         ("verbose,v",       "Print per-seed progress")
@@ -388,6 +396,7 @@ int main(int argc, char* argv[]) {
     const bool   weighted_sse    = args.count("weighted-sse") > 0;
     const bool   mahalanobis     = args.count("mahalanobis") > 0;
     const double neoplastic_div_rate = args["neoplastic-div-rate"].as<double>();
+    const int    max_healthy_cells = args["max-healthy-cells"].as<int>();
     const int    seed_offset     = args["seed-offset"].as<int>();
 
     // --- Header ---
@@ -426,6 +435,7 @@ int main(int argc, char* argv[]) {
     std::cout << "  d1_threshold=" << d1_threshold
               << "  d2_threshold=" << d2_threshold
               << "  division_rate=" << division_rate
+              << "  max_healthy_cells=" << max_healthy_cells
               << "  kappa_brca1=" << kappa_brca1
               << "  age_drift=" << age_drift
               << "  big_bang=" << (big_bang ? "true" : "false") << "\n\n";
@@ -437,7 +447,8 @@ int main(int argc, char* argv[]) {
                             d1_threshold, d2_threshold,
                             tumor_threshold,
                             big_bang, neoplastic_div_rate, seed_offset,
-                            division_rate, kappa_brca1, age_drift);
+                            division_rate, kappa_brca1, age_drift,
+                            max_healthy_cells);
 
     if (verbose) std::cout << "  done.\n";
 

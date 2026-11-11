@@ -23,6 +23,7 @@ add_executable(unit_tests
         LognormalNoiseInstabilityStrategyTest.cpp
         RunBootstrappingTest.cpp
         TissueScaleSimulatorTest.cpp
+        TissueHomeostasisTest.cpp
 )
 
 target_include_directories(unit_tests PRIVATE

@@ -281,7 +281,11 @@ namespace domain {
     }
 
     void AgenticCell::phase5_Cytokinesis() {
-        pending_daughter_ = attemptDivision();
+        if (is_neoplastic_ || !division_inhibited_) {
+            pending_daughter_ = attemptDivision();
+        } else {
+            pending_daughter_ = nullptr;
+        }
         increaseAge();
     }
 

@@ -52,6 +52,8 @@ namespace domain {
         // === Division ===
         /// Returns owned daughter cell after a division tick, or nullptr if no division occurred.
         virtual std::unique_ptr<ICell> takePendingDaughter() = 0;
+        virtual void setDivisionInhibited(bool /*inhibited*/) {}
+        [[nodiscard]] virtual bool isDivisionInhibited() const { return false; }
 
         // === Information ===
         virtual void details() const {}

@@ -11,6 +11,7 @@ namespace application {
     public:
         explicit Simulation(int max_t_years);
         void addCell(std::unique_ptr<domain::ICell> cell);
+        void setMaxHealthyCells(std::size_t cap) { tissue_.setMaxHealthyCells(cap); }
         void run(); // dt=1 year, up to max_t_
 
         [[nodiscard]] int firstTimeNeoplastic();

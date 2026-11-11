@@ -20,6 +20,20 @@ void Tissue::live() {
         }
     }
 
+    // Pre-cycle: update contact inhibition for healthy cells based on capacity
+    std::size_t current_healthy_count = 0;
+    for (const auto& cell : cells_) {
+        if (cell && !cell->isNeoplastic()) {
+            ++current_healthy_count;
+        }
+    }
+    const bool inhibit_healthy = (max_healthy_cells_ > 0 && current_healthy_count >= max_healthy_cells_);
+    for (auto& cell : cells_) {
+        if (cell && !cell->isNeoplastic()) {
+            cell->setDivisionInhibited(inhibit_healthy);
+        }
+    }
+
     for (std::size_t i = 0; i < cells_.size(); ++i) {
         if (!cells_[i]) continue;
 
@@ -66,9 +80,21 @@ void Tissue::live() {
         return;
     }
 
-    for (auto& daughter : new_daughters)
+    int added_birth_count = 0;
+    for (auto& daughter : new_daughters) {
+        if (!daughter) continue;
+        if (!daughter->isNeoplastic() && max_healthy_cells_ > 0) {
+            if (non_tumoral_count >= max_healthy_cells_) {
+                logger_->logTissue("[Tissue] Normal daughter discarded due to carrying capacity (" +
+                                   std::to_string(max_healthy_cells_) + ")");
+                continue;
+            }
+            ++non_tumoral_count;
+        }
         addCell(std::move(daughter));
-    last_birth_count_ = static_cast<int>(new_daughters.size());
+        ++added_birth_count;
+    }
+    last_birth_count_ = added_birth_count;
 }
 
 void Tissue::addCell(std::unique_ptr<ICell> cell) {

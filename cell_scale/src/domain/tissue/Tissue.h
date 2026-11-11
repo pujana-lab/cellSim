@@ -62,6 +62,10 @@ namespace domain {
         // Returns true once tumoral cells >= non-tumoral alive cells (set during live())
         [[nodiscard]] bool isSaturated() const { return saturated_; }
 
+        // Homeostatic capacity for non-tumoral / healthy cells (default 1000, 0 = unlimited)
+        void setMaxHealthyCells(std::size_t cap) { max_healthy_cells_ = cap; }
+        [[nodiscard]] std::size_t getMaxHealthyCells() const { return max_healthy_cells_; }
+
     private:
         ports::ILoggerPtr logger_;
         std::vector<std::unique_ptr<ICell>> cells_;
@@ -70,6 +74,7 @@ namespace domain {
         int last_death_count_ = 0;
         int last_birth_count_ = 0;
         bool saturated_ = false;
+        std::size_t max_healthy_cells_ = 1000;
     };
 
 } // namespace domain

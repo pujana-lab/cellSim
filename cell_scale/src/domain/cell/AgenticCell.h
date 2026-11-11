@@ -84,6 +84,8 @@ namespace domain {
         // === ICell: Division ===
         /// Returns owned daughter cell after live() cycle, or nullptr if no division.
         std::unique_ptr<ICell> takePendingDaughter() override { return std::move(pending_daughter_); }
+        void setDivisionInhibited(bool inhibited) override { division_inhibited_ = inhibited; }
+        [[nodiscard]] bool isDivisionInhibited() const override { return division_inhibited_; }
 
         // === Other public methods ===
         bool isNeoplasticProtected() const;
@@ -161,6 +163,7 @@ namespace domain {
 
         // === Pending daughter cell (for division without signals) ===
         std::unique_ptr<AgenticCell> pending_daughter_;
+        bool division_inhibited_ = false;
 
         // === Private lifecycle phases ===
         void phase0_BaselineAssessment() const;
