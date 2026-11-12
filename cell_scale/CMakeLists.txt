@@ -72,6 +72,11 @@ add_executable(run_paper_interventions app/run_paper_interventions.cpp)
 target_link_libraries(run_paper_interventions PRIVATE cell_scale_lib)
 set_target_properties(run_paper_interventions PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
+# Ejecutable 4: run_stage_trajectories (Tracking temporal de estadios celulares)
+add_executable(run_stage_trajectories app/run_stage_trajectories.cpp)
+target_link_libraries(run_stage_trajectories PRIVATE cell_scale_lib)
+set_target_properties(run_stage_trajectories PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
 # Tests unitarios
 if(BUILD_TESTS)
     add_subdirectory(tests)

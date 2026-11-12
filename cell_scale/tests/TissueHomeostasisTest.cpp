@@ -104,3 +104,42 @@ TEST_F(TissueHomeostasisTest, TumoralCellsCanDivideAndExpandBeyondCapacity) {
     // Tumoral cells are not blocked by max_healthy_cells
     EXPECT_GT(tissue.size(), 6u);
 }
+
+TEST_F(TissueHomeostasisTest, ReplenishesDeficitAndDiscardsSurplusDaughtersAtCarryingCapacity) {
+    Tissue tissue(logger_);
+    tissue.setMaxHealthyCells(10);
+
+    // Start with 6 healthy cells (deficit = 4 cells below capacity 10)
+    for (int i = 0; i < 6; ++i) {
+        Genome genome = genome_factory::makeDefaultGenome(
+            {{"BRCA1", 0.0}, {"TP53", 0.0}},
+            {{"BRCA1", 0.0}, {"TP53", 0.0}},
+            logger_
+        );
+        auto noise = std::make_unique<adapters::FixedNoise>(CellNoise{0.0}); // triggers division
+        auto cell = CellFactory::createCustomCell(
+            std::move(noise), genome,
+            0.0, 0.0,
+            1.0,   // division_rate = 1.0 (all 6 cells divide, producing 6 daughters)
+            0.0, false,
+            2.0, 5.0,
+            logger_
+        );
+        tissue.addCell(std::move(cell));
+    }
+
+    ASSERT_EQ(tissue.size(), 6u);
+
+    // Cycle 1: 6 cells divide producing 6 daughters.
+    // Capacity allows exactly 4 daughters to enter (6 + 4 = 10); 2 surplus daughters are discarded.
+    tissue.live();
+    EXPECT_EQ(tissue.size(), 10u);
+    EXPECT_EQ(tissue.lastBirthCount(), 4);
+
+    // Cycle 2: Now that population is at capacity (10), pre-cycle contact inhibition is active.
+    // Zero births should occur.
+    tissue.live();
+    EXPECT_EQ(tissue.size(), 10u);
+    EXPECT_EQ(tissue.lastBirthCount(), 0);
+}
+

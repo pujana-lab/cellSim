@@ -58,10 +58,14 @@ Result oneRun(
     double brca1_rate, double tp53_rate,
     double d1_threshold, double d2_threshold,
     double division_rate, double neoplastic_div_rate,
-    double tumor_threshold, double kappa_brca1, double age_drift
+    double tumor_threshold, double kappa_brca1, double age_drift,
+    int max_healthy_cells = 1000
 ) {
     auto logger=std::make_shared<domain::adapters::NullLogger>();
     PaperSimulation sim(max_t);
+    if (max_healthy_cells >= 0) {
+        sim.setMaxHealthyCells(static_cast<std::size_t>(max_healthy_cells));
+    }
     for (int i=0;i<n_cells;++i) {
         auto genome=domain::genome_factory::makeDefaultGenome(
             {{"BRCA1",brca1_rate},{"TP53",tp53_rate}},
@@ -131,6 +135,7 @@ int main(int argc,char**argv) {
       ("tumor-threshold","Tumor-positive fraction",cxxopts::value<double>()->default_value("0.05"))
       ("kappa-brca1","BRCA1 -/- D2 weighting",cxxopts::value<double>()->default_value("2.0"))
       ("age-drift","Cell-age drift coefficient",cxxopts::value<double>()->default_value("0.00001"))
+      ("max-healthy-cells","Maximum healthy cells cap",cxxopts::value<int>()->default_value("1000"))
       ("output","Output CSV",cxxopts::value<std::string>()->default_value("paper_features.csv"))
       ("h,help","Help");
     auto a=o.parse(argc,argv);
@@ -148,7 +153,8 @@ int main(int argc,char**argv) {
             a["d1-threshold"].as<double>(),a["d2-threshold"].as<double>(),
             a["division-rate"].as<double>(),a["neoplastic-div-rate"].as<double>(),
             a["tumor-threshold"].as<double>(),a["kappa-brca1"].as<double>(),
-            a["age-drift"].as<double>());
+            a["age-drift"].as<double>(),
+            a["max-healthy-cells"].as<int>());
     }
     std::ofstream f(a["output"].as<std::string>());
     f<<"seed,onset_year,alive_cells,tumoral_cells,brca1_pm,brca1_mm,brca1_category,founder_count,median_d1,median_d2\n";

@@ -1,0 +1,555 @@
+Dinámica del compartimento normal en BRCA1-ONSET
+Extinción y crecimiento del tejido a partir de las reglas del modelo
+Resumen. Con las reglas descritas en Métodos, el número esperado de células Baseline evoluciona como
+𝔼[𝐵(𝑡)] = 𝜆𝑡𝐵 𝐵(0), con 𝜆𝐵 = (1 − 𝛽)(1 − 𝜇)(1 + 𝑑). Este factor es el autovalor dominante de todo el
+compartimento normal. La frontera entre extinción y crecimiento del tejido es 𝑑ℎ ≈ 𝛽 + 𝜇. En el modelo
+de 500 células 𝑑 = 0.001, 51 veces por debajo de 𝑑ℎ = 0.051, y el tejido normal se reduce a la mitad
+cada 14 años. Justo en la frontera la dinámica es neutra: ninguna fuerza devuelve el tejido a su tamaño.
+De fondo, el modelo asigna a la pérdida de BRCA1 una probabilidad por célula y año mayor que la de
+división (𝛽/𝑑 ≈ 46), lo contrario de lo esperable biológicamente.
+
+1 Objetivo y alcance
+Este documento deriva, a partir de las reglas del modelo BRCA1-ONSET tal como están escritas en Métodos,
+la dinámica del número de células no neoplásicas de un tejido simulado. Se busca:
+1. la ley de evolución del número esperado de células;
+2. el punto de bifurcación entre extinción y crecimiento del tejido, en función de 𝛽, 𝜇 y 𝑑;
+3. la naturaleza del punto crítico.
+Los valores numéricos proceden del manuscrito: las medias posteriores para el modelo de 500 células y la
+parametrización representativa para el modelo a escala tisular.
+
+2 Notación
+Símbolo
+
+Significado
+
+𝑡 = 0, 1, 2, …
+
+Ciclo de simulación (≈ 1 año); 𝑡 = 0 es el nacimiento.
+
+𝐵, 𝑇1 , 𝑇2 , 𝑇3
+
+Tipos de célula normal. 𝐵 = Baseline (BRCA1+/−; TP53+/+), 𝑇1 = (BRCA1+/−; TP53+/−),
+𝑇2 = (BRCA1+/−; TP53−/−), 𝑇3 = (BRCA1−/−; TP53−/−).
+
+𝐵(𝑡), 𝑇1 (𝑡), … Número de células de cada tipo al comienzo del ciclo 𝑡 (variables aleatorias).
+𝑁𝑛 (𝑡)
+
+Células normales: 𝑁𝑛 = 𝐵 + 𝑇1 + 𝑇2 + 𝑇3 .
+
+𝛽
+
+Coeficiente de pérdida del alelo restante de BRCA1: la probabilidad por ciclo es
+min{1, 𝛽𝐷1 }.
+
+𝜇
+
+Coeficiente de pérdida de una copia de TP53 (𝜇 ≡ 𝜇𝑇 𝑃 53 ): la probabilidad es min{1, 𝜇𝐷1 }.
+
+𝑑
+
+Probabilidad de división por ciclo de una célula normal.
+
+𝜈
+
+Probabilidad de división por ciclo de una célula Tumoral.
+
+𝐷1
+
+Variable latente de inestabilidad intrínseca; 𝐷1 (0) = 1.
+
+𝛼
+
+Coeficiente del término de edad celular, 𝐴(𝑡) = 𝛼 𝑎(𝑡), con 𝛼 = 10−5 .
+
+𝑋
+
+Número de células 𝐵 que deja una célula 𝐵 en el ciclo siguiente.
+
+𝑐
+
+Abreviatura: 𝑐 = (1 − 𝛽)(1 − 𝜇).
+
+𝜆𝐵
+
+Factor medio de multiplicación de 𝐵 por ciclo: 𝜆𝐵 = 𝔼[𝑋].
+
+𝑑ℎ
+
+Valor de 𝑑 para el que 𝜆𝐵 = 1.
+
+𝛽𝑐
+
+Valor de 𝛽 para el que 𝜆𝐵 = 1, con 𝑑 y 𝜇 fijos.
+
+𝜎
+
+2
+
+𝔼[⋅], Var[⋅]
+
+Varianza de 𝑋.
+Esperanza y varianza.
+
+1
+
+3 Reglas del modelo que intervienen
+Las reglas siguientes se toman literalmente de Métodos.
+1. Mutación. En cada ciclo, el gen 𝑔 pierde una copia con probabilidad 𝑃mut,𝑔 = min{1, 𝜇𝑔 𝐷1 }, con
+𝜇𝐵𝑅𝐶𝐴1 = 𝛽 y 𝜇𝑇 𝑃 53 = 𝜇.
+2. Checkpoint. Una célula BRCA1−/− cuyo TP53 no es −/− no es viable: la pérdida de BRCA1 desde 𝐵 o 𝑇1
+produce la muerte.
+3. Eliminación tisular. Solo afecta a células TP53−/− (𝑇2 , 𝑇3 ) que entran en el estado Primed (𝐷1 > 𝜃𝐷1 )
+con 𝐷2 ≤ 𝜃𝐷2 .
+4. División. Una célula normal se divide con probabilidad 𝑑; una Tumoral, con probabilidad 𝜈. Cada división
+añade una célula con el mismo estado.
+5. Dinámica de 𝐷1 . 𝐷1 (𝑡 + 1) = 𝐷1 (𝑡) + 𝛿𝑇 𝑃 53 (𝑡) + 𝐴(𝑡), con 𝛿𝑇 𝑃 53 = 0, 𝛿low , 𝛿high según TP53 sea +/+,
++/−, −/−.
+Se adopta el orden mutación → checkpoint → división dentro de cada ciclo. Métodos describe otro orden
+(viabilidad → eliminación → mutación → actualización de 𝐷 → Primed → división). Con ese orden, una
+célula que pierde BRCA1 puede dividirse antes de morir en el ciclo siguiente, pero sus hijas mueren también,
+así que no cambia el número de células 𝐵 que sobreviven.
+
+4 El valor de 𝐷1 en las células Baseline
+La probabilidad de muerte de una célula 𝐵 es 𝛽𝐷1 . Para trabajar con 𝛽 en lugar de 𝛽𝐷1 hay que saber cuánto
+puede valer 𝐷1 en una célula 𝐵. Esta sección lo acota por abajo y por arriba.
+
+4.1 Qué suma 𝐷1 en una célula Baseline
+La regla de Métodos es
+𝐷1 (𝑡 + 1) = 𝐷1 (𝑡) + 𝛿𝑇 𝑃 53 (𝑡) + 𝐴(𝑡),
+
+𝐴(𝑡) = 𝛼 𝑎(𝑡), 𝛼 = 10−5 ,
+
+(1)
+
+donde 𝑎(𝑡) es la edad celular: según Métodos, «the number of simulation cycles completed since that cell
+was generated».
+En una célula 𝐵, TP53 es +/+, así que 𝛿𝑇 𝑃 53 = 0. Lo único que se suma cada ciclo es el término de edad:
+𝐷1 (𝑡 + 1) = 𝐷1 (𝑡) + 𝛼 𝑎(𝑡).
+
+(2)
+
+4.2 Cota inferior: 𝐷1 ≥ 1
+Como 𝑎(𝑡) ≥ 0, cada incremento 𝛼 𝑎(𝑡) es ≥ 0. 𝐷1 nunca baja, y como empieza en 𝐷1 (0) = 1, siempre es
+𝐷1 (𝑡) ≥ 1.
+
+4.3 Cota superior: el caso en que 𝐷1 crece más
+Paso 1: la edad celular nunca supera la edad del tejido. Las células iniciales se crean en 𝑡 = 0, con 𝑎(0) =
+0. Una célula creada en el ciclo 𝑠0 tiene, en el ciclo 𝑠, edad 𝑎(𝑠) = 𝑠 − 𝑠0 . Por tanto
+𝑎(𝑠) ≤ 𝑠
+
+en todo ciclo 𝑠,
+
+(3)
+
+con igualdad solo para una célula inicial que no se ha dividido nunca.
+Paso 2: el caso de una célula que no se divide nunca. Sumando Ecuación 2 desde el ciclo 0 hasta el 𝑡 −
+1, con 𝑎(𝑠) = 𝑠:
+𝐷1 (𝑡) = 1 + 𝛼(𝑎(0) + 𝑎(1) + … + 𝑎(𝑡 − 1)) = 1 + 𝛼(0 + 1 + 2 + … + (𝑡 − 1)).
+
+(4)
+
+La suma 0 + 1 + … + (𝑡 − 1) es la suma de Gauss: emparejando el primero con el último, el segundo con el
+penúltimo, etc., cada par suma 𝑡 − 1 y hay 𝑡/2 pares. Por tanto
+0 + 1 + … + (𝑡 − 1) =
+
+𝑡(𝑡 − 1)
+2
+2
+
+⇒
+
+𝐷1 (𝑡) = 1 + 𝛼
+
+𝑡(𝑡 − 1)
+.
+2
+
+(5)
+
+Paso 3: las divisiones no empeoran la cota. Cuando una célula se divide en el ciclo 𝑠0 , la hija hereda el
+valor de 𝐷1 de la madre, pero su edad celular vuelve a 0. Se sigue el linaje (la célula inicial, luego su hija,
+luego la hija de esta…). En cada ciclo 𝑠, el incremento que recibe 𝐷1 es 𝛼 por la edad de la célula que lleva el
+linaje en ese momento, y esa edad es ≤ 𝑠 por el paso 1. Sumando ciclo a ciclo:
+𝑡−1
+
+𝑡−1
+
+𝐷1 (𝑡) = 1 + 𝛼 ∑ 𝑎(𝑠) ≤ 1 + 𝛼 ∑ 𝑠 = 1 + 𝛼
+𝑠=0
+
+𝑠=0
+
+𝑡(𝑡 − 1)
+.
+2
+
+(6)
+
+Las divisiones solo pueden reducir 𝐷1 respecto al caso sin división, porque reinician la edad. El peor caso
+es el del paso 2.
+Lema 1. En una célula 𝐵,
+1 ≤ 𝐷1 (𝑡) ≤ 1 + 𝛼
+
+𝑡(𝑡 − 1)
+.
+2
+
+(7)
+
+Valores numéricos (𝛼 = 10−5 ):
+Edad 𝑡 𝑡(𝑡 − 1)/2 Cota de 𝐷1
+
+Cota de 𝛽𝐷1
+
+20
+
+190
+
+1.0019
+
+0.0458
+
+40
+
+780
+
+1.0078
+
+0.0461
+
+60
+
+1770
+
+1.0177
+
+0.0465
+
+80
+
+3160
+
+1.0316
+
+0.0471
+
+Por tanto, en una célula Baseline la probabilidad de muerte está siempre entre 𝛽 = 0.0457 y 1.032𝛽 = 0.0471.
+Observación. De aquí 𝛽 ≤ 𝛽𝐷1 ≤ 1.032𝛽 en las células 𝐵. En lo que sigue se aproxima 𝛽𝐷1 ≈ 𝛽 y
+𝜇𝐷1 ≈ 𝜇. La aproximación subestima las salidas, así que las conclusiones sobre el decrecimiento del
+tejido valen también, con más razón, sin aproximar.
+
+5 Descendencia de una célula Baseline en un ciclo
+5.1 Árbol de sucesos
+En un ciclo, una célula 𝐵:
+1. pierde BRCA1 con probabilidad 𝛽 y muere, aunque pierda también TP53 en el mismo ciclo, porque sigue
+sin ser TP53−/−;
+2. si no pierde BRCA1 (probabilidad 1 − 𝛽):
+• pierde una copia de TP53 (probabilidad 𝜇): pasa a 𝑇1 y deja de contar como 𝐵;
+• no la pierde (probabilidad 1 − 𝜇): sigue siendo 𝐵;
+3. si sigue siendo 𝐵, se divide con probabilidad 𝑑 y da dos células 𝐵; si no, queda una.
+
+5.2 Distribución de 𝑋
+𝑃 (𝑋 = 0) = 𝛽 + (1 − 𝛽)𝜇,
+𝑃 (𝑋 = 1) = (1 − 𝛽)(1 − 𝜇)(1 − 𝑑),
+
+(8)
+
+𝑃 (𝑋 = 2) = (1 − 𝛽)(1 − 𝜇)𝑑.
+Comprobación de normalización. Cada paso agrupa una bifurcación del árbol, de abajo arriba:
+𝛽 + (1 − 𝛽)𝜇 + (1 − 𝛽)(1 − 𝜇)[(1 − 𝑑) + 𝑑]
+= 𝛽 + (1 − 𝛽)[𝜇 + (1 − 𝜇)]
+= 𝛽 + (1 − 𝛽) = 1.
+3
+
+(9)
+
+6 Evolución del número esperado de células Baseline
+6.1 Media de 𝑋
+𝔼[𝑋] = 0 ⋅ 𝑃 (𝑋 = 0) + 1 ⋅ 𝑃 (𝑋 = 1) + 2 ⋅ 𝑃 (𝑋 = 2) = (1 − 𝛽)(1 − 𝜇)[(1 − 𝑑) + 2𝑑],
+
+(10)
+
+𝜆𝐵 ≔ 𝔼[𝑋] = (1 − 𝛽)(1 − 𝜇)(1 + 𝑑) = 𝑐(1 + 𝑑).
+
+(11)
+
+es decir,
+
+6.2 Media condicional
+Se numeran 1, …, 𝐵(𝑡) las células 𝐵 presentes en el ciclo 𝑡. El subíndice identifica la célula, no el tiempo. Sea
+𝑋𝑖 el número de células 𝐵 que deja la célula 𝑖. Entonces
+𝐵(𝑡)
+
+𝐵(𝑡 + 1) = ∑ 𝑋𝑖 .
+
+(12)
+
+𝑖=1
+
+La suma tiene tantos términos como células haya en ese ciclo. Todas las 𝑋𝑖 tienen la distribución Ecuación 8,
+así que, por linealidad de la esperanza:
+𝐵(𝑡)
+
+𝔼[𝐵(𝑡 + 1) | 𝐵(𝑡)] = ∑ 𝔼[𝑋𝑖 ] = 𝜆𝐵 𝐵(𝑡).
+
+(13)
+
+𝑖=1
+
+Este paso no requiere independencia entre células.
+
+6.3 Eliminación de la condición
+Lema 2. (Esperanza total). Para variables aleatorias discretas 𝑌 , 𝑍: 𝔼[𝔼[𝑌 | 𝑍]] = 𝔼[𝑌 ].
+Demostración. 𝔼[𝑌 | 𝑍] es una función de 𝑍, 𝑔(𝑍), con 𝑔(𝑏) = ∑𝑦 𝑦 𝑃 (𝑌 = 𝑦 | 𝑍 = 𝑏). Entonces
+𝔼[𝑔(𝑍)] = ∑ 𝑔(𝑏)𝑃 (𝑍 = 𝑏) = ∑ ∑ 𝑦 𝑃 (𝑌 = 𝑦 | 𝑍 = 𝑏)𝑃 (𝑍 = 𝑏)
+𝑏
+
+𝑏
+
+𝑦
+
+= ∑ 𝑦 ∑ 𝑃 (𝑌 = 𝑦, 𝑍 = 𝑏) = ∑ 𝑦 𝑃 (𝑌 = 𝑦) = 𝔼[𝑌 ],
+𝑦
+
+(14)
+
+𝑦
+
+𝑏
+
+donde se usa 𝑃 (𝑌 = 𝑦 | 𝑍 = 𝑏)𝑃 (𝑍 = 𝑏) = 𝑃 (𝑌 = 𝑦, 𝑍 = 𝑏) y que sumar la conjunta sobre todos los
+valores de 𝑍 da la marginal de 𝑌 .
+□
+Aplicando 𝔼[⋅] a ambos lados de Ecuación 13 y el Lema 2, y sacando la constante 𝜆𝐵 :
+𝔼[𝐵(𝑡 + 1)] = 𝔼[𝔼[𝐵(𝑡 + 1) | 𝐵(𝑡)]] = 𝔼[𝜆𝐵 𝐵(𝑡)] = 𝜆𝐵 𝔼[𝐵(𝑡)].
+
+(15)
+
+Iterando ciclo a ciclo:
+𝔼[𝐵(𝑡)] = 𝜆𝑡𝐵 𝐵(0).
+
+(16)
+
+6.4 Valores numéricos (modelo de 500 células)
+Con 𝛽 = 0.0457, 𝜇 = 0.003 y 𝑑 = 0.001: 𝜆𝐵 = 0.9543 × 0.997 × 1.001 = 0.9524. El tiempo para que el
+tejido se reduzca a la mitad es ln 2/(− ln 𝜆𝐵 ) ≈ 14.2 años.
+Edad (años) 𝔼[𝐵(𝑡)] = 500𝜆𝑡𝐵
+20
+
+189
+
+40
+
+71
+
+60
+
+27
+
+80
+
+10
+
+4
+
+7 El compartimento normal completo
+7.1 Sistema multitipo
+Como las mutaciones son irreversibles (𝐵 → 𝑇1 → 𝑇2 → 𝑇3 ), con 𝒙 = (𝐵, 𝑇1 , 𝑇2 , 𝑇3 )𝑇 la media evoluciona
+como 𝔼[𝒙(𝑡 + 1)] = 𝑀 𝔼[𝒙(𝑡)], con
+𝜆𝐵 0
+0
+0
+𝑚21 𝜆𝑇 1 0
+0
+𝑀=
+.
+0 𝑚32 𝜆𝑇 2 0
+0 𝑚43 𝜆𝑇 3 )
+( 0
+
+(17)
+
+La fila 𝑖 indica de qué tipos proceden las células de tipo 𝑖. Ignorando dos mutaciones en el mismo ciclo:
+• 𝑚21 = (1 − 𝛽)𝜇(1 + 𝑑): células 𝐵 que pasan a 𝑇1 ;
+• 𝜆𝑇 1 = (1 − 𝛽𝐷1 )(1 − 𝜇𝐷1 )(1 + 𝑑): células 𝑇1 que siguen siendo 𝑇1 ;
+• 𝑚32 y 𝑚43 : transiciones 𝑇1 → 𝑇2 y 𝑇2 → 𝑇3 ;
+• 𝜆𝑇 2 y 𝜆𝑇 3 : células que permanecen en 𝑇2 o 𝑇3 sin entrar en Primed.
+
+7.2 Autovalores
+𝑀 es triangular inferior: por encima de la diagonal todo es 0, porque ninguna célula vuelve a un estado
+anterior. Su determinante característico es el producto de la diagonal:
+det(𝑀 − 𝜆𝐼) = (𝜆𝐵 − 𝜆)(𝜆𝑇 1 − 𝜆)(𝜆𝑇 2 − 𝜆)(𝜆𝑇 3 − 𝜆),
+
+(18)
+
+así que los autovalores son 𝜆𝐵 , 𝜆𝑇 1 , 𝜆𝑇 2 y 𝜆𝑇 3 . Cada uno es el factor por el que se multiplica una población
+de ese tipo si no recibe aportes. La solución es una combinación de términos 𝜆𝑡𝑘 , y a largo plazo domina el
+mayor.
+Lema 3. 𝜆𝑇 1 ≤ 𝜆𝐵 .
+Demostración. En 𝑇1 se cumple 𝐷1 ≥ 1 (de hecho 𝐷1 crece 𝛿low por ciclo), así que 1 − 𝛽𝐷1 ≤ 1 − 𝛽 y 1 −
+𝜇𝐷1 ≤ 1 − 𝜇.
+□
+Lema 4. Ningún linaje de 𝑇2 o 𝑇3 permanece en el compartimento normal más de 3 ciclos (con 𝜃𝐷1 =
+2 y 𝛿high = 0.392).
+Demostración. Una célula entra en 𝑇2 con 𝐷1 ≥ 1. A partir de ahí, 𝐷1 crece al menos 𝛿high por ciclo, así que
+tras 𝑛 ciclos 𝐷1 ≥ 1 + 0.392𝑛 > 2 si 𝑛 ≥ 3. En ese momento entra en Primed y sale del compartimento
+normal: es eliminada o pasa a Tumoral. Sus hijas heredan 𝐷1 y salen a la vez. Lo mismo vale para 𝑇3 . □
+Proposición 1. El autovalor dominante del compartimento normal es 𝜆𝐵 . A largo plazo, 𝔼[𝑁𝑛 (𝑡)] ∝
+𝜆𝑡𝐵 , y 𝑇1 , 𝑇2 y 𝑇3 se mantienen como fracciones acotadas de 𝐵.
+Observación. Estrictamente, 𝜆𝑇 1 y 𝜆𝑇 2 dependen de 𝐷1 , que cambia con el tiempo que la célula lleva
+en cada estado. El modelo exacto está estructurado por edad dentro de cada tipo. La conclusión no
+cambia, porque 𝐷1 solo aumenta y por tanto solo aumenta las salidas. No es correcto usar 𝑑ℎ ≈ 𝛽 para
+el compartimento completo con el argumento de que las transiciones de TP53 son internas. A largo plazo
+la condición correcta es la de 𝐵, 𝑑ℎ ≈ 𝛽 + 𝜇, porque 𝐵 es el único tipo que se sostiene por sí mismo.
+
+8 Punto de bifurcación
+La condición crítica es 𝜆𝐵 = 1:
+
+5
+
+(1 − 𝛽)(1 − 𝜇)(1 + 𝑑) = 1.
+
+(19)
+
+Despejando 𝑑, y usando (1 − 𝛽)(1 − 𝜇) = 1 − 𝛽 − 𝜇 + 𝛽𝜇:
+𝑑ℎ =
+
+1
+𝛽 + 𝜇 − 𝛽𝜇
+−1=
+≈ 𝛽 + 𝜇.
+(1 − 𝛽)(1 − 𝜇)
+1 − 𝛽 − 𝜇 + 𝛽𝜇
+
+(20)
+
+Despejando 𝛽:
+𝛽𝑐 = 1 −
+Condición
+
+1
+≈ 𝑑 − 𝜇.
+(1 + 𝑑)(1 − 𝜇)
+
+Media
+
+𝜆𝐵
+
+(21)
+
+Proceso estocástico
+
+𝑑 < 𝑑ℎ
+
+< 1 decae a 0 exponencialmente
+
+subcrítico: extinción segura
+
+𝑑 = 𝑑ℎ
+
+=1
+
+constante
+
+crítico (sección 9)
+
+𝑑 > 𝑑ℎ
+
+>1
+
+crece exponencialmente
+
+supercrítico: supervivencia con probabilidad > 0
+
+Valores del manuscrito:
+Modelo de 500 células
+
+Escala tisular
+
+𝛽, 𝜇, 𝑑
+
+0.0457, 0.003, 0.001
+
+0.00275, 2.01 × 10−5 , 0.001
+
+𝜆𝐵
+
+0.9524
+
+0.9982
+
+𝑑ℎ
+
+0.0510 (51 × 𝑑)
+
+0.00278 (2.8 × 𝑑)
+
+𝛽𝑐
+
+−0.0020
+
+0.00098
+
+Vida media del tejido normal
+
+14.2 años
+
+391 años
+
+𝜆80
+𝐵
+
+0.020
+
+0.868
+
+𝛽/𝑑
+
+46
+
+2.8
+
+Observación. En el modelo de 500 células 𝛽𝑐 < 0: incluso con 𝛽 = 0 el tejido decrecería, porque 𝑑 =
+0.001 < 𝜇 = 0.003. Las células pasan a 𝑇1 más deprisa de lo que se dividen.
+
+9 El punto crítico: dinámica neutra
+Si 𝑑 = 𝑑ℎ , entonces 𝔼[𝐵(𝑡 + 1)] = 𝔼[𝐵(𝑡)], y todo valor es un punto fijo de la media. Cada uno es neutro:
+una perturbación Δ𝐵 se mantiene indefinidamente, ni se corrige ni se amplifica. Además, el punto crítico es
+estructuralmente inestable. Si 𝑑 = 𝑑ℎ + 𝜀:
+𝜆𝐵 = 𝑐(1 + 𝑑ℎ + 𝜀) = 1 + 𝑐𝜀 ⇒
+
+𝔼[𝐵(𝑡)] ≈ 𝐵(0)𝑒𝑐𝜀𝑡 .
+
+(22)
+
+Cualquier desviación de los parámetros conduce a crecimiento o a extinción. No hay ninguna fuerza que
+devuelva el tejido a su tamaño.
+
+10 Células Tumoral
+Las células Tumoral no mueren y se dividen con probabilidad 𝜈, así que 𝜆Tum = 1 + 𝜈 = 1.159 > 1. No hay
+bifurcación: un clon Tumoral crece siempre y nunca se extingue.
+
+11 Conclusiones
+1. El tamaño esperado del compartimento normal está gobernado por 𝜆𝐵 = (1 − 𝛽)(1 − 𝜇)(1 + 𝑑), y
+𝔼[𝐵(𝑡)] = 𝜆𝑡𝐵 𝐵(0).
+2. La frontera entre extinción y crecimiento del tejido es 𝑑ℎ ≈ 𝛽 + 𝜇 (equivalentemente, 𝛽𝑐 ≈ 𝑑 − 𝜇).
+6
+
+3. En el modelo de 500 células, 𝑑 = 0.001 está 51 veces por debajo de 𝑑ℎ . El tejido normal se reduce a la
+mitad cada 14 años y queda en un 2 % a los 80 años. Ni siquiera con 𝛽 = 0 se mantendría.
+4. En el punto crítico, la dinámica es neutra y estructuralmente inestable: cualquier desviación de 𝑑 respecto
+a 𝑑ℎ conduce a extinción o a crecimiento.
+5. El origen del problema es una inversión de escalas. El modelo asigna a la pérdida de BRCA1 una probabi­
+lidad por célula y año mayor que la de división (𝛽/𝑑 ≈ 46 en el modelo de 500 y ≈ 2.8 a escala tisular).
+Biológicamente, la pérdida de una copia de un gen concreto es un suceso mucho más raro que una división.
+Inflar 𝛽 para compensar el pequeño número de agentes tiene sentido para generar sucesos, pero, como
+cada pérdida elimina un agente entero, también infla la muerte.
+6. Consecuencias para el manuscrito:
+• el umbral «5 % de las células supervivientes» se aplica sobre un compartimento normal que se reduce
+como 𝜆𝑡𝐵 ; a los 60 años, el 5 % de 𝔼[𝐵(60)] ≈ 27 células es ≈ 1.3 células;
+• 𝑑 no puede compensar las salidas, lo que es coherente con su efecto nulo en la Fig. S2a.
+Se recomienda mostrar 𝑁𝑛 (𝑡) obtenido con CellSim.
+
+7
+
+

@@ -30,13 +30,14 @@ import numpy as np
 import pandas as pd
 from scipy.stats import multivariate_normal
 
-# Parameters to calibrate via ABC-SMC
-PARAM_NAMES = ["division_rate", "brca1_rate", "low_delta", "high_delta"]
+# Parameters to calibrate via ABC-SMC (p and nu decoupled)
+PARAM_NAMES = ["division_rate", "brca1_rate", "low_delta", "high_delta", "neoplastic_div_rate"]
 PRIORS: Dict[str, Tuple[float, float]] = {
-    "division_rate": (0.047, 0.057),
-    "brca1_rate":    (0.001, 0.150),
-    "low_delta":     (0.060, 0.220),
-    "high_delta":    (0.120, 0.600),
+    "division_rate":      (0.060, 0.140),
+    "brca1_rate":         (0.001, 0.150),
+    "low_delta":          (0.060, 0.220),
+    "high_delta":         (0.120, 0.600),
+    "neoplastic_div_rate":(0.150, 0.550),
 }
 
 # Regex to parse stdout from run_bootstrapping
@@ -80,7 +81,7 @@ def evaluate_simulation(
     """Runs run_bootstrapping for a single particle and returns (distance, risks)."""
     p_dict = {name: float(theta[i]) for i, name in enumerate(PARAM_NAMES)}
     p_div = p_dict["division_rate"]
-    nu_div = 10.0 * p_div  # Coupled tumoral division rate (10x basal)
+    nu_div = p_dict["neoplastic_div_rate"]  # Autonomous tumoral division rate (decoupled)
 
     cmd = [
         binary_path,
@@ -159,7 +160,7 @@ def run_abc_smc(
     diagnostics_path = output_dir / "smc_diagnostics.csv"
 
     print(f"\n{'='*70}")
-    print(f" ABC-SMC Calibration (p in [0.047, 0.057], nu = 10*p, N0={n_cells})")
+    print(f" ABC-SMC Calibration (p in [0.060, 0.140], nu in [0.150, 0.550], N0={n_cells})")
     print(f" Particles: {n_particles} | Generations: {n_generations} | MC runs: {n_sim}")
     print(f" Priors: {PRIORS}")
     print(f"{'='*70}\n")
@@ -247,7 +248,6 @@ def run_abc_smc(
 
         # Save generation particles to CSV
         gen_df = pd.DataFrame(particles_arr, columns=PARAM_NAMES)
-        gen_df["neoplastic_div_rate"] = 10.0 * gen_df["division_rate"]
         gen_df["weight"] = weights_arr
         gen_df["distance_weighted_sse"] = distances_arr
         for age in AGES:
