@@ -1,0 +1,13 @@
+{
+  "timestamp": "20261117_090825",
+  "run_name": "run_20261117_090825_conditioned_beta_600cells_s100",
+  "particles": 50,
+  "generations": 8,
+  "n_sim": 100,
+  "workers": 10,
+  "seed": 42,
+  "n_cells": 600,
+  "tp53_rate": 0.003,
+  "healthy_min": 0.15,
+  "healthy_max": 0.35
+}
