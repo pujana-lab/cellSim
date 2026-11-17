@@ -83,11 +83,11 @@ Run the multi-generation ABC-SMC calibration using the conditioned $\beta$ prior
 Regenerate Figure 3 (posterior predictive against Kuchenbaecker 2017), Figure S4 (posterior parameter distributions and correlations), and Figure 4 (BRCA1 genotype breakdown and founder lineage complexity) reflecting the conditioned homeostatic model.
 
 ### To-do actions list
-- [ ] Generate Figure 3 (empirical fit and $\varepsilon$ trajectory) and verify that all milestone age penetrances fall within the 95% CI.
-- [ ] Generate Supplementary Figure S4 and S4b showing the parameter posterior distributions.
-- [ ] Execute `run_paper_features` or emergent features simulation across posterior particles.
-- [ ] Render Figure 4 (Panels 4a, 4b, 4c) and synchronize all figures to `results/paper_figures/`.
-- [ ] Verify the changes in terms of typechecking, linting and tests using the project's verification command (look it up in the AGENTS.md file or the project configuration). Fix issues if any.
+- [x] Generate Figure 3 (empirical fit and $\varepsilon$ trajectory) and verify that all milestone age penetrances fall within the 95% CI.
+- [x] Generate Supplementary Figure S4 and S4b showing the parameter posterior distributions.
+- [x] Execute `run_paper_features` or emergent features simulation across posterior particles.
+- [x] Render Figure 4 (Panels 4a, 4b, 4c) and synchronize all figures to `results/paper_figures/`.
+- [x] Verify the changes in terms of typechecking, linting and tests using the project's verification command (look it up in the AGENTS.md file or the project configuration). Fix issues if any.
 - [ ] STOP. Present the changes to the user for review and suggest commit messages (or pull request titles, when the phases are implemented through pull requests). Do NOT proceed to the next phase until the user explicitly asks.
 
 # ⏭️ Next step

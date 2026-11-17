@@ -54,8 +54,8 @@ def run_one_particle(item: Tuple[int, pd.Series], binary: str, n_per: int) -> pd
         binary,
         "--n-runs", str(n_per),
         "--seed-offset", str(20000 + i * n_per),
-        "--n-cells", "1000",
-        "--max-healthy-cells", "1000",
+        "--n-cells", "600",
+        "--max-healthy-cells", "600",
         "--brca1-rate", str(float(row["brca1_rate"])),
         "--low-delta", str(float(row["low_delta"])),
         "--high-delta", str(float(row["high_delta"])),
@@ -183,7 +183,11 @@ def summarize_features(raw_df: pd.DataFrame, out_dir: Path):
 
     # Contingency Table
     ctable = pd.crosstab(d["age_group"], d["founder_category"]).reindex(index=AGE_ORDER, columns=FOUNDER_ORDER).fillna(0)
-    chi2, chi2_p, dof, _ = chi2_contingency(ctable)
+    ct_clean = ctable.loc[(ctable.sum(axis=1) > 0), (ctable.sum(axis=0) > 0)]
+    if not ct_clean.empty and ct_clean.shape[0] > 1 and ct_clean.shape[1] > 1:
+        chi2, chi2_p, dof, _ = chi2_contingency(ct_clean)
+    else:
+        chi2, chi2_p, dof = float("nan"), float("nan"), 0
     print(f"  Chi-square: {chi2:.2f}, df: {dof} (P = {chi2_p:.2e})")
 
     with open(out_dir / "stats_validation.txt", "w") as f:
