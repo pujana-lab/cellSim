@@ -64,15 +64,15 @@ Create the isolated git branch for this experiment. Modify the cell and tissue d
   - Test tumoral cells can divide and expand beyond 1000.
 
 #### To-do Actions List
-- [x] Create and checkout git branch `experiment/abc-smc-p0052-homeostasis-1000cells`.
-- [x] Add division inhibition contract methods to `ICell.h`.
-- [x] Implement `division_inhibited_` in `AgenticCell.h` and gate `phase5_Cytokinesis()`.
-- [x] Add `max_healthy_cells_` field and getter/setter in `Tissue.h`.
-- [x] Implement contact inhibition and daughter filtering in `Tissue::live()`.
-- [x] Add CLI flag `--max-healthy-cells` to `cell_scale/app/run_bootstrapping.cpp`.
-- [x] Create `cell_scale/tests/TissueHomeostasisTest.cpp` testing carrying capacity and tumoral escape.
-- [x] Verify the changes in terms of typechecking, linting and tests using the project's verification command. Fix issues if any.
-- [x] STOP. Present the changes to the user for review and suggest commit messages. Do NOT proceed to the next phase until the user explicitly asks.
+- [ ] Create and checkout git branch `experiment/abc-smc-p0052-homeostasis-1000cells`.
+- [ ] Add division inhibition contract methods to `ICell.h`.
+- [ ] Implement `division_inhibited_` in `AgenticCell.h` and gate `phase5_Cytokinesis()`.
+- [ ] Add `max_healthy_cells_` field and getter/setter in `Tissue.h`.
+- [ ] Implement contact inhibition and daughter filtering in `Tissue::live()`.
+- [ ] Add CLI flag `--max-healthy-cells` to `cell_scale/app/run_bootstrapping.cpp`.
+- [ ] Create `cell_scale/tests/TissueHomeostasisTest.cpp` testing carrying capacity and tumoral escape.
+- [ ] Verify the changes in terms of typechecking, linting and tests using the project's verification command. Fix issues if any.
+- [ ] STOP. Present the changes to the user for review and suggest commit messages. Do NOT proceed to the next phase until the user explicitly asks.
 
 ---
 
@@ -100,12 +100,12 @@ Create a dedicated experiment directory `experiments/exp08_cs_abc_smc_homeostasi
     - `smc_diagnostics.csv`
 
 #### To-do Actions List
-- [x] Scaffold `experiments/exp08_cs_abc_smc_homeostasis/` directory.
-- [x] Implement `abc_smc.py` with updated parameter vector, priors, and dynamic $\nu = 10 \times p$ flag injection.
-- [x] Ensure generation CSV serialization records both `division_rate` and the coupled `neoplastic_div_rate`.
-- [x] Add CLI flags to `abc_smc.py` for configuring population size (default 1000), seeds, and generations.
-- [x] Verify the changes in terms of typechecking, linting and tests using the project's verification command. Fix issues if any.
-- [x] STOP. Present the changes to the user for review and suggest commit messages. Do NOT proceed to the next phase until the user explicitly asks.
+- [ ] Scaffold `experiments/exp08_cs_abc_smc_homeostasis/` directory.
+- [ ] Implement `abc_smc.py` with updated parameter vector, priors, and dynamic $\nu = 10 \times p$ flag injection.
+- [ ] Ensure generation CSV serialization records both `division_rate` and the coupled `neoplastic_div_rate`.
+- [ ] Add CLI flags to `abc_smc.py` for configuring population size (default 1000), seeds, and generations.
+- [ ] Verify the changes in terms of typechecking, linting and tests using the project's verification command. Fix issues if any.
+- [ ] STOP. Present the changes to the user for review and suggest commit messages. Do NOT proceed to the next phase until the user explicitly asks.
 
 ---
 
@@ -121,14 +121,14 @@ Execute a reduced proof-of-concept run of the new ABC-SMC pipeline (e.g. 2–3 g
   - Documentation of the experiment design, rationale from `brca1_onset_dinamica_tejido.pdf`, and execution guide.
 
 #### To-do Actions List
-- [x] Create `run_pilot.sh` to trigger a fast test run (e.g. 20 particles, 3 generations).
-- [x] Execute the pilot run and inspect `smc_diagnostics.csv` to ensure acceptable distance reduction without parameter collapse.
-- [x] Verify healthy cell counts stay bounded around 1000 throughout simulated tissue lifespans.
-- [x] Author `README.md` detailing the biological rationale, coupling rule, and instructions for full calibration.
-- [x] Verify the changes in terms of typechecking, linting and tests using the project's verification command. Fix issues if any.
-- [x] STOP. Present the changes to the user for review and suggest commit messages. Do NOT proceed to the next phase until the user explicitly asks.
+- [ ] Create `run_pilot.sh` to trigger a fast test run (e.g. 20 particles, 3 generations).
+- [ ] Execute the pilot run and inspect `smc_diagnostics.csv` to ensure acceptable distance reduction without parameter collapse.
+- [ ] Verify healthy cell counts stay bounded around 1000 throughout simulated tissue lifespans.
+- [ ] Author `README.md` detailing the biological rationale, coupling rule, and instructions for full calibration.
+- [ ] Verify the changes in terms of typechecking, linting and tests using the project's verification command. Fix issues if any.
+- [ ] STOP. Present the changes to the user for review and suggest commit messages. Do NOT proceed to the next phase until the user explicitly asks.
 
 ---
 
 ## Next Step
-Todas las fases del plan han sido completadas con éxito en la rama `experiment/abc-smc-p0052-homeostasis-1000cells`. El siguiente paso es lanzar la calibración completa de producción (e.g. `run_full_calibration.sh`) o consolidar los cambios.
+Proceed to **Phase 1: Git Branch Creation and C++ Domain Homeostasis** upon user confirmation.

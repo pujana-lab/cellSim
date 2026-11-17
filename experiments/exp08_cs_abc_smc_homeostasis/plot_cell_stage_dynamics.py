@@ -168,6 +168,12 @@ def plot_dynamics(csv_path: Path, out_dir: Path):
 
 
 if __name__ == "__main__":
-    csv_file = Path("experiments/exp08_cs_abc_smc_homeostasis/data/stage_trajectories_100tissues_1000cells.csv")
-    out = Path("experiments/exp08_cs_abc_smc_homeostasis")
+    import argparse
+    parser = argparse.ArgumentParser(description="Plot cell stage dynamics")
+    parser.add_argument("--csv", type=str, default="experiments/exp08_cs_abc_smc_homeostasis/data/stage_trajectories_100tissues.csv", help="Input trajectories CSV")
+    parser.add_argument("--out-dir", type=str, default="experiments/exp08_cs_abc_smc_homeostasis", help="Output directory")
+    args = parser.parse_args()
+
+    csv_file = Path(args.csv)
+    out = Path(args.out_dir)
     plot_dynamics(csv_file, out)
