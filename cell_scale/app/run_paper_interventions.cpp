@@ -136,15 +136,17 @@ int main(int argc,char**argv){
     o.add_options()
       ("design","Design CSV",cxxopts::value<std::string>())
       ("output","Output CSV",cxxopts::value<std::string>()->default_value("paper_intervention_results.csv"))
+      ("cells","Initial cells per tissue",cxxopts::value<int>()->default_value("500"))
       ("h,help","Help");
     auto a=o.parse(argc,argv);
     if(a.count("help")||!a.count("design")){ std::cout<<o.help(); return a.count("design")?0:2; }
+    int n_cells=a["cells"].as<int>();
     auto design=readDesign(a["design"].as<std::string>());
     std::vector<Outcome> out(design.size());
 #ifdef BOOTSTRAPPING_USE_OMP
 #pragma omp parallel for schedule(dynamic,4)
 #endif
-    for(long long i=0;i<(long long)design.size();++i) out[i]=runOne(design[i]);
+    for(long long i=0;i<(long long)design.size();++i) out[i]=runOne(design[i],80,n_cells);
 
     std::ofstream f(a["output"].as<std::string>());
     f<<"tissue_id,seed,condition,dose,intervention_age,r_d1,r_d2,eligible,onset_year,tumor_by70,tumor_by80\n";
